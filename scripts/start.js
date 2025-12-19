@@ -38,17 +38,26 @@ async function main() {
   console.log('[Startup] World Economic Map - Production Startup');
   console.log('='.repeat(60));
 
-  // Step 1: Run migrations
-  if (!run('npm run migrate', 'Running database migrations')) {
-    console.error('[Startup] Migration failed, but continuing...');
-  }
+  // Step 1: Run migrations (non-blocking - server will start even if this fails)
+  console.log('\n[Startup] Running database migrations...');
+  const migrateProcess = spawn('npm', ['run', 'migrate'], {
+    cwd: rootDir,
+    stdio: 'inherit',
+    env: { ...process.env }
+  });
+  
+  migrateProcess.on('exit', (code) => {
+    if (code === 0) {
+      console.log('[Startup] Migrations completed successfully');
+      // Seed countries after migrations succeed
+      run('npm run seed', 'Seeding countries');
+    } else {
+      console.error('[Startup] Migrations failed (code ' + code + '), but continuing...');
+      console.error('[Startup] You can run migrations manually later');
+    }
+  });
 
-  // Step 2: Seed countries (idempotent - skips if already seeded)
-  if (!run('npm run seed', 'Seeding countries')) {
-    console.error('[Startup] Seed failed, but continuing...');
-  }
-
-  // Step 3: Start the server
+  // Step 2: Start the server immediately (don't wait for migrations)
   console.log('\n[Startup] Starting production server...');
   console.log('='.repeat(60));
 
