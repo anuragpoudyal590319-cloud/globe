@@ -1,0 +1,35 @@
+{
+  "name": "globe",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "World Economic Map - Interest rates, inflation, and exchange rates visualization",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "build": "npm run build -w frontend && npm run build -w backend",
+    "start": "node scripts/start.js",
+    "start:server": "npm run start -w backend",
+    "migrate": "npm run migrate -w backend",
+    "migrate:down": "npm run migrate:down -w backend",
+    "seed": "npm run seed -w backend",
+    "ingest": "npm run ingest -w backend",
+    "backfill": "npm run backfill -w backend",
+    "setup": "npm run migrate && npm run seed && npm run ingest",
+    "setup:prod": "npm run migrate && npm run seed",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
+
