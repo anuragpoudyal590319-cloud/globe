@@ -12,7 +12,7 @@ import { fetchExchangeRates } from '../services/ingestion/exchange.js';
 import { upsertIndicatorValues, logIngestion } from '../services/ingestion/upsert.js';
 import { pool } from '../db/pool.js';
 
-async function runAllIngestion(): Promise<void> {
+export async function runAllIngestion(): Promise<void> {
   console.log('[RunOnce] Starting all ingestion jobs...');
   
   const jobs = [
@@ -51,13 +51,16 @@ async function runAllIngestion(): Promise<void> {
   }
 }
 
-runAllIngestion()
-  .then(() => {
-    console.log('\n[RunOnce] All jobs completed');
-    return pool.end();
-  })
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error('[RunOnce] Fatal error:', err);
-    pool.end().then(() => process.exit(1));
-  });
+// Only run if called directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runAllIngestion()
+    .then(() => {
+      console.log('\n[RunOnce] All jobs completed');
+      return pool.end();
+    })
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error('[RunOnce] Fatal error:', err);
+      pool.end().then(() => process.exit(1));
+    });
+}

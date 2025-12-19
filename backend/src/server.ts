@@ -38,6 +38,33 @@ async function start(): Promise<void> {
       return { status: 'ok', timestamp: new Date().toISOString() };
     });
 
+    // Trigger ingestion endpoint (for initial data fetch)
+    fastify.get('/api/admin/ingest', async (request, reply) => {
+      // Simple security: check for a secret token (set via env var)
+      const secret = process.env.INGEST_SECRET || 'dev-secret-change-in-production';
+      const providedSecret = (request.query as { secret?: string }).secret || '';
+      
+      if (providedSecret !== secret) {
+        return reply.status(401).send({ 
+          error: 'Unauthorized',
+          message: 'Add ?secret=YOUR_SECRET to the URL. Default secret: dev-secret-change-in-production'
+        });
+      }
+
+      // Run ingestion in background (don't block the response)
+      import('./jobs/runOnce.js').then(({ runAllIngestion }) => {
+        runAllIngestion().catch(err => {
+          console.error('[API] Ingestion error:', err);
+        });
+      });
+
+      return { 
+        status: 'started', 
+        message: 'Ingestion started in background. Check Railway logs for progress.',
+        timestamp: new Date().toISOString() 
+      };
+    });
+
     // In production, serve the frontend static files
     if (config.server.isProduction) {
       const frontendDistPath = path.join(__dirname, '../../frontend/dist');
