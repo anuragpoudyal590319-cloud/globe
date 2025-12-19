@@ -1,9 +1,14 @@
 # World Economic Map
 
-A free, production-grade single-page web application displaying a world choropleth map with:
-- **Exchange Rates** (vs USD) - Updated daily
-- **Interest Rates** (real interest rate %) - Updated weekly
-- **Inflation Rates** (consumer prices annual %) - Updated monthly
+A free, production-grade single-page web application displaying a world choropleth map with 8 economic indicators and historical data charts (1960-2024).
+
+## Features
+
+- **8 Economic Indicators**: GDP per Capita, Inflation, Interest Rates, Unemployment, Government Debt, GINI Index, Life Expectancy, Exchange Rates
+- **Interactive Choropleth Map**: Color-coded countries with hover tooltips
+- **Historical Data Charts**: Click any country to view 60+ years of historical trends
+- **Multi-indicator Overlay**: Compare multiple indicators on the same chart
+- **Automatic Data Updates**: Cron-based ingestion from World Bank API
 
 ## Architecture
 
@@ -38,16 +43,15 @@ A free, production-grade single-page web application displaying a world chorople
 - React 18 + TypeScript
 - Vite (build tool)
 - react-simple-maps (choropleth rendering)
+- Recharts (historical data charts)
 - d3-scale (color scales)
 
-## Quick Start
+## Quick Start (Local Development)
 
 ### Prerequisites
 - Node.js 18+
 - Docker Desktop (must be running for PostgreSQL)
 - npm 9+
-
-> **Important**: Make sure Docker Desktop is running before starting the database.
 
 ### 1. Start the Database
 
@@ -68,22 +72,6 @@ npm install
 
 ### 3. Set Up the Database
 
-The default configuration uses:
-- PostgreSQL on port 5433 (to avoid conflicts with local PostgreSQL)
-- Backend API on port 3001
-- Frontend dev server on port 5173
-
-You can override by creating a `.env` file in the `backend/` directory:
-
-```bash
-# backend/.env (optional - these are the defaults)
-DATABASE_URL=postgresql://globe:globe_dev_password@localhost:5433/globe
-PORT=3001
-CRON_TZ=UTC
-```
-
-Run migrations and seed data:
-
 ```bash
 # Run database migrations
 npm run migrate
@@ -91,8 +79,11 @@ npm run migrate
 # Seed countries from World Bank
 npm run seed
 
-# Run initial data ingestion (fetches all indicators)
+# Run initial data ingestion (fetches latest indicators)
 npm run ingest
+
+# (Optional) Backfill historical data (~5-10 minutes)
+npm run backfill
 ```
 
 ### 4. Start Development Servers
@@ -110,6 +101,61 @@ npm run dev:frontend  # Frontend on http://localhost:5173
 
 Visit http://localhost:5173 in your browser.
 
+## Production Deployment (Railway)
+
+### 1. Push to GitHub
+
+```bash
+# Create a new GitHub repository, then:
+git remote add origin https://github.com/YOUR_USERNAME/globe.git
+git push -u origin main
+```
+
+### 2. Deploy to Railway
+
+1. Go to [railway.app](https://railway.app) and sign in with GitHub
+2. Click **New Project** → **Deploy from GitHub repo**
+3. Select your repository
+4. Railway will auto-detect the config from `railway.json`
+
+### 3. Add PostgreSQL Database
+
+1. In Railway dashboard, click **+ New** → **Database** → **PostgreSQL**
+2. Railway automatically injects `DATABASE_URL` into your service
+
+### 4. Initialize the Database
+
+After first deploy, run these commands via Railway CLI or dashboard shell:
+
+```bash
+# Run migrations
+npm run migrate
+
+# Seed countries
+npm run seed
+
+# (Optional) Backfill historical data
+npm run backfill
+```
+
+### 5. Configure Custom Domain
+
+1. Go to your service **Settings** → **Domains**
+2. Click **Add Custom Domain**
+3. Add the CNAME record to your DNS provider
+4. Railway auto-provisions SSL
+
+### Environment Variables
+
+Railway auto-injects these, but you can customize:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | (auto) | PostgreSQL connection string |
+| `PORT` | (auto) | Server port |
+| `NODE_ENV` | production | Environment mode |
+| `CRON_TZ` | UTC | Timezone for cron jobs |
+
 ## API Endpoints
 
 All endpoints are read-only (GET):
@@ -117,128 +163,41 @@ All endpoints are read-only (GET):
 | Endpoint | Description |
 |----------|-------------|
 | `GET /api/countries` | List all countries with metadata |
-| `GET /api/indicators/latest?type=exchange` | Latest exchange rates |
-| `GET /api/indicators/latest?type=interest` | Latest interest rates |
-| `GET /api/indicators/latest?type=inflation` | Latest inflation rates |
+| `GET /api/indicators/latest?type={type}` | Latest values for indicator type |
+| `GET /api/history/:country_code` | Historical data for a country |
 | `GET /api/meta/last-updated` | Ingestion timestamps and counts |
 | `GET /api/health` | Health check |
+
+**Indicator types:** `exchange`, `inflation`, `interest`, `gdp_per_capita`, `unemployment`, `government_debt`, `gini`, `life_expectancy`
 
 ## Data Sources
 
 | Indicator | Source | Update Frequency |
 |-----------|--------|------------------|
-| Exchange Rates | [Open Exchange Rates API](https://open.er-api.com/) | Daily at 02:00 UTC |
-| Interest Rates | [World Bank - FR.INR.RINR](https://data.worldbank.org/indicator/FR.INR.RINR) | Weekly (Sunday 03:00 UTC) |
-| Inflation Rates | [World Bank - FP.CPI.TOTL.ZG](https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG) | Monthly (1st at 04:00 UTC) |
-
-## Database Schema
-
-```sql
--- Countries table
-countries (
-  country_code CHAR(2) PRIMARY KEY,
-  name TEXT NOT NULL,
-  region TEXT,
-  income_level TEXT,
-  currency_code CHAR(3),
-  created_at TIMESTAMPTZ,
-  updated_at TIMESTAMPTZ
-)
-
--- Indicator definitions
-indicators (
-  id UUID PRIMARY KEY,
-  indicator_type TEXT CHECK (IN 'interest', 'inflation', 'exchange'),
-  source TEXT NOT NULL,
-  source_indicator_code TEXT,
-  name TEXT NOT NULL,
-  unit TEXT
-)
-
--- Versioned indicator values
-indicator_values (
-  id UUID PRIMARY KEY,
-  country_code CHAR(2) REFERENCES countries,
-  indicator_id UUID REFERENCES indicators,
-  effective_date DATE NOT NULL,
-  value DOUBLE PRECISION NOT NULL,
-  fetched_at TIMESTAMPTZ NOT NULL,
-  data_version INT DEFAULT 1,
-  UNIQUE (country_code, indicator_id, effective_date, data_version)
-)
-
--- Ingestion audit log
-ingestion_logs (
-  id UUID PRIMARY KEY,
-  job_name TEXT NOT NULL,
-  status TEXT CHECK (IN 'success', 'failure', 'partial'),
-  started_at TIMESTAMPTZ,
-  finished_at TIMESTAMPTZ,
-  items_inserted INT,
-  items_updated INT,
-  error_message TEXT
-)
-```
-
-## Project Structure
-
-```
-globe/
-├── backend/
-│   ├── migrations/           # Database migrations
-│   ├── src/
-│   │   ├── cache/            # LRU response cache
-│   │   ├── db/               # PostgreSQL pool
-│   │   ├── jobs/             # Cron scheduler
-│   │   ├── routes/           # API routes
-│   │   ├── seed/             # Country seeder
-│   │   ├── services/
-│   │   │   └── ingestion/    # Data ingestion services
-│   │   ├── config.ts
-│   │   └── server.ts
-│   └── package.json
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── api/              # Backend API client
-│   │   ├── components/       # React components
-│   │   ├── types/            # TypeScript declarations
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   └── package.json
-├── docker-compose.yml
-├── package.json              # Workspace root
-└── README.md
-```
+| Exchange Rates | [Open Exchange Rates API](https://open.er-api.com/) | Daily |
+| Interest Rates | [World Bank - FR.INR.RINR](https://data.worldbank.org/indicator/FR.INR.RINR) | Weekly |
+| Inflation Rates | [World Bank - FP.CPI.TOTL.ZG](https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG) | Monthly |
+| GDP per Capita | [World Bank - NY.GDP.PCAP.CD](https://data.worldbank.org/indicator/NY.GDP.PCAP.CD) | Monthly |
+| Unemployment | [World Bank - SL.UEM.TOTL.ZS](https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS) | Monthly |
+| Government Debt | [World Bank - GC.DOD.TOTL.GD.ZS](https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS) | Monthly |
+| GINI Index | [World Bank - SI.POV.GINI](https://data.worldbank.org/indicator/SI.POV.GINI) | Monthly |
+| Life Expectancy | [World Bank - SP.DYN.LE00.IN](https://data.worldbank.org/indicator/SP.DYN.LE00.IN) | Monthly |
 
 ## Scripts Reference
 
 | Script | Description |
 |--------|-------------|
 | `npm run dev` | Start both backend and frontend in dev mode |
-| `npm run dev:backend` | Start backend only |
-| `npm run dev:frontend` | Start frontend only |
 | `npm run build` | Build both for production |
+| `npm run start` | Start production server (runs migrations first) |
 | `npm run migrate` | Run database migrations |
 | `npm run seed` | Seed countries from World Bank |
 | `npm run ingest` | Run all ingestion jobs once |
+| `npm run backfill` | Backfill historical data (one-time) |
 | `npm run setup` | Full setup (migrate + seed + ingest) |
 | `npm run db:start` | Start PostgreSQL container |
 | `npm run db:stop` | Stop PostgreSQL container |
 
-## Production Deployment
-
-For production:
-
-1. Set proper environment variables
-2. Use a managed PostgreSQL instance
-3. Run `npm run build` for optimized builds
-4. Serve frontend build with a CDN/static host
-5. Run backend with `npm run start`
-
-Cron jobs run automatically in the backend process.
-
 ## License
 
 MIT
-
