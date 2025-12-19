@@ -65,6 +65,32 @@ async function start(): Promise<void> {
       };
     });
 
+    // Trigger historical backfill endpoint (fetches ALL years of data)
+    fastify.get('/api/admin/backfill', async (request, reply) => {
+      const secret = process.env.INGEST_SECRET || 'dev-secret-change-in-production';
+      const providedSecret = (request.query as { secret?: string }).secret || '';
+      
+      if (providedSecret !== secret) {
+        return reply.status(401).send({ 
+          error: 'Unauthorized',
+          message: 'Add ?secret=YOUR_SECRET to the URL'
+        });
+      }
+
+      // Run backfill in background (this takes 10-15 minutes)
+      import('./jobs/backfillHistory.js').then(({ runBackfill }) => {
+        runBackfill().catch(err => {
+          console.error('[API] Backfill error:', err);
+        });
+      });
+
+      return { 
+        status: 'started', 
+        message: 'Historical backfill started. This takes 10-15 minutes. Check Railway logs for progress.',
+        timestamp: new Date().toISOString() 
+      };
+    });
+
     // In production, serve the frontend static files
     if (config.server.isProduction) {
       const frontendDistPath = path.join(__dirname, '../../frontend/dist');
