@@ -36,7 +36,22 @@ export type IndicatorType =
   | 'unemployment'
   | 'government_debt'
   | 'gini'
-  | 'life_expectancy';
+  | 'life_expectancy'
+  // Trade
+  | 'exports'
+  | 'imports'
+  | 'fdi_inflows'
+  // Labor
+  | 'labor_force'
+  | 'female_employment'
+  // Finance
+  | 'domestic_credit'
+  // Development
+  | 'education_spending'
+  | 'poverty_headcount'
+  // Energy
+  | 'co2_emissions'
+  | 'renewable_energy';
 
 export interface HistoryDataPoint {
   year: number;
@@ -54,6 +69,38 @@ export interface YearRangeResponse {
   min_year: number;
   max_year: number;
   data_points: number;
+}
+
+export interface CompareCountryInfo {
+  code: string;
+  name: string;
+  region: string | null;
+}
+
+export interface IndicatorSummary {
+  latest: number | null;
+  latestYear: number | null;
+  min: number | null;
+  max: number | null;
+  avg: number | null;
+}
+
+export interface CompareDataPoint {
+  year: number;
+  value: number;
+}
+
+export interface CompareResponse {
+  countries: CompareCountryInfo[];
+  data: Record<string, Record<string, CompareDataPoint[]>>;
+  summary: Record<string, Record<string, IndicatorSummary>>;
+}
+
+export interface CompareCountryOption {
+  code: string;
+  name: string;
+  region: string | null;
+  dataPoints: number;
 }
 
 const BASE_URL = '/api';
@@ -103,4 +150,30 @@ export const api = {
 
   getCountryYearRange: (countryCode: string) => 
     fetchJson<YearRangeResponse>(`/history/${countryCode}/range`),
+
+  // Comparison API
+  compareCountries: (
+    countryCodes: string[],
+    indicators?: IndicatorType[],
+    from?: number,
+    to?: number
+  ) => {
+    const params = new URLSearchParams();
+    params.set('countries', countryCodes.join(','));
+    
+    if (indicators && indicators.length > 0) {
+      params.set('indicators', indicators.join(','));
+    }
+    if (from) {
+      params.set('from', from.toString());
+    }
+    if (to) {
+      params.set('to', to.toString());
+    }
+    
+    return fetchJson<CompareResponse>(`/compare?${params.toString()}`);
+  },
+
+  getCompareCountries: () => 
+    fetchJson<{ countries: CompareCountryOption[] }>('/compare/countries'),
 };

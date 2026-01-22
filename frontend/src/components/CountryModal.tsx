@@ -9,13 +9,29 @@ interface CountryModalProps {
 }
 
 const ALL_INDICATORS: { type: IndicatorType; label: string; icon: string }[] = [
+  // Economy
   { type: 'gdp_per_capita', label: 'GDP per Capita', icon: '💰' },
   { type: 'inflation', label: 'Inflation', icon: '📊' },
   { type: 'interest', label: 'Interest Rate', icon: '📈' },
-  { type: 'unemployment', label: 'Unemployment', icon: '👥' },
   { type: 'government_debt', label: 'Gov. Debt', icon: '🏛️' },
+  // Trade
+  { type: 'exports', label: 'Exports', icon: '📦' },
+  { type: 'imports', label: 'Imports', icon: '🚢' },
+  { type: 'fdi_inflows', label: 'FDI Inflows', icon: '💼' },
+  // Labor
+  { type: 'unemployment', label: 'Unemployment', icon: '👥' },
+  { type: 'labor_force', label: 'Labor Force', icon: '🏭' },
+  { type: 'female_employment', label: 'Female Employment', icon: '👩‍💼' },
+  // Finance
+  { type: 'domestic_credit', label: 'Domestic Credit', icon: '🏦' },
+  // Development
   { type: 'gini', label: 'GINI Index', icon: '⚖️' },
   { type: 'life_expectancy', label: 'Life Expectancy', icon: '❤️' },
+  { type: 'education_spending', label: 'Education Spending', icon: '🎓' },
+  { type: 'poverty_headcount', label: 'Poverty Rate', icon: '🏚️' },
+  // Energy
+  { type: 'co2_emissions', label: 'CO2 Emissions', icon: '🏭' },
+  { type: 'renewable_energy', label: 'Renewable Energy', icon: '🌱' },
 ];
 
 export function CountryModal({ country, onClose }: CountryModalProps) {

@@ -129,6 +129,91 @@ function getColorInterpolator(type: IndicatorType) {
         const b = Math.round(68 + (129 - 68) * t);
         return `rgb(${r}, ${g}, ${b})`;
       };
+    // Trade indicators
+    case 'exports':
+      // Light cyan to dark teal (higher exports shown darker)
+      return (t: number) => {
+        const r = Math.round(178 + (15 - 178) * t);
+        const g = Math.round(235 + (118 - 235) * t);
+        const b = Math.round(242 + (110 - 242) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'imports':
+      // Light orange to dark orange (higher imports shown darker)
+      return (t: number) => {
+        const r = Math.round(255 + (194 - 255) * t);
+        const g = Math.round(237 + (65 - 237) * t);
+        const b = Math.round(213 + (12 - 213) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'fdi_inflows':
+      // Light purple to deep purple (higher FDI shown darker)
+      return (t: number) => {
+        const r = Math.round(233 + (88 - 233) * t);
+        const g = Math.round(213 + (28 - 213) * t);
+        const b = Math.round(255 + (135 - 255) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    // Labor indicators
+    case 'labor_force':
+      // Light blue to dark blue (higher participation shown darker)
+      return (t: number) => {
+        const r = Math.round(191 + (30 - 191) * t);
+        const g = Math.round(219 + (64 - 219) * t);
+        const b = Math.round(254 + (175 - 254) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'female_employment':
+      // Light pink to deep magenta (higher shown darker)
+      return (t: number) => {
+        const r = Math.round(252 + (190 - 252) * t);
+        const g = Math.round(231 + (24 - 231) * t);
+        const b = Math.round(243 + (93 - 243) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    // Finance indicators
+    case 'domestic_credit':
+      // Light gold to dark gold/brown (higher credit shown darker)
+      return (t: number) => {
+        const r = Math.round(254 + (146 - 254) * t);
+        const g = Math.round(243 + (64 - 243) * t);
+        const b = Math.round(199 + (14 - 199) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    // Development indicators
+    case 'education_spending':
+      // Light indigo to deep indigo (higher spending shown darker)
+      return (t: number) => {
+        const r = Math.round(199 + (67 - 199) * t);
+        const g = Math.round(210 + (56 - 210) * t);
+        const b = Math.round(254 + (202 - 254) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'poverty_headcount':
+      // Green to red (low poverty is good, high poverty is bad)
+      return (t: number) => {
+        const r = Math.round(34 + (220 - 34) * t);
+        const g = Math.round(197 + (38 - 197) * t);
+        const b = Math.round(94 + (38 - 94) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    // Energy indicators
+    case 'co2_emissions':
+      // Light gray to dark gray/black (lower is better)
+      return (t: number) => {
+        const r = Math.round(200 + (40 - 200) * t);
+        const g = Math.round(200 + (40 - 200) * t);
+        const b = Math.round(200 + (40 - 200) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'renewable_energy':
+      // Brown to bright green (higher renewable is better)
+      return (t: number) => {
+        const r = Math.round(139 + (34 - 139) * t);
+        const g = Math.round(90 + (197 - 90) * t);
+        const b = Math.round(43 + (94 - 43) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
     default:
       // Default blue gradient
       return (t: number) => {

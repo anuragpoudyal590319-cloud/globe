@@ -8,6 +8,7 @@ import { countriesRoutes } from './routes/countries.js';
 import { indicatorsRoutes } from './routes/indicators.js';
 import { metaRoutes } from './routes/meta.js';
 import { historyRoutes } from './routes/history.js';
+import { compareRoutes } from './routes/compare.js';
 import { startScheduler } from './jobs/scheduler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,6 +33,7 @@ async function start(): Promise<void> {
     await fastify.register(indicatorsRoutes);
     await fastify.register(metaRoutes);
     await fastify.register(historyRoutes);
+    await fastify.register(compareRoutes);
 
     // Health check
     fastify.get('/api/health', async () => {

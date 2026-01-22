@@ -216,6 +216,25 @@
   opacity: 0.8;
 }
 
+.compareButton {
+  background: var(--accent-cyan);
+  color: var(--bg-primary);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.compareButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(34, 211, 238, 0.3);
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 10px 12px;

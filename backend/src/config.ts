@@ -30,6 +30,21 @@ export const config = {
     government_debt: '66666666-6666-6666-6666-666666666666',
     gini: '77777777-7777-7777-7777-777777777777',
     life_expectancy: '88888888-8888-8888-8888-888888888888',
+    // New indicators (Trade)
+    exports: '99999999-9999-9999-9999-999999999999',
+    imports: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+    fdi_inflows: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+    // New indicators (Labor)
+    labor_force: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+    female_employment: 'dddddddd-dddd-dddd-dddd-dddddddddddd',
+    // New indicators (Finance)
+    domestic_credit: 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
+    // New indicators (Development)
+    education_spending: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    poverty_headcount: '10101010-1010-1010-1010-101010101010',
+    // New indicators (Energy)
+    co2_emissions: '20202020-2020-2020-2020-202020202020',
+    renewable_energy: '30303030-3030-3030-3030-303030303030',
   },
   // World Bank indicator codes for each type
   worldBankCodes: {
@@ -40,6 +55,21 @@ export const config = {
     government_debt: 'GC.DOD.TOTL.GD.ZS',
     gini: 'SI.POV.GINI',
     life_expectancy: 'SP.DYN.LE00.IN',
+    // Trade indicators
+    exports: 'NE.EXP.GNFS.ZS',
+    imports: 'NE.IMP.GNFS.ZS',
+    fdi_inflows: 'BX.KLT.DINV.WD.GD.ZS',
+    // Labor indicators
+    labor_force: 'SL.TLF.CACT.ZS',
+    female_employment: 'SL.EMP.TOTL.SP.FE.ZS',
+    // Finance indicators
+    domestic_credit: 'FS.AST.DOMS.GD.ZS',
+    // Development indicators
+    education_spending: 'SE.XPD.TOTL.GD.ZS',
+    poverty_headcount: 'SI.POV.DDAY',
+    // Energy indicators
+    co2_emissions: 'EN.ATM.CO2E.PC',
+    renewable_energy: 'EG.FEC.RNEW.ZS',
   },
   // External API URLs
   apis: {
@@ -58,7 +88,22 @@ export type IndicatorType =
   | 'unemployment' 
   | 'government_debt' 
   | 'gini' 
-  | 'life_expectancy';
+  | 'life_expectancy'
+  // Trade
+  | 'exports'
+  | 'imports'
+  | 'fdi_inflows'
+  // Labor
+  | 'labor_force'
+  | 'female_employment'
+  // Finance
+  | 'domestic_credit'
+  // Development
+  | 'education_spending'
+  | 'poverty_headcount'
+  // Energy
+  | 'co2_emissions'
+  | 'renewable_energy';
 
 export const ALL_INDICATOR_TYPES: IndicatorType[] = [
   'interest',
@@ -69,4 +114,19 @@ export const ALL_INDICATOR_TYPES: IndicatorType[] = [
   'government_debt',
   'gini',
   'life_expectancy',
+  // Trade
+  'exports',
+  'imports',
+  'fdi_inflows',
+  // Labor
+  'labor_force',
+  'female_employment',
+  // Finance
+  'domestic_credit',
+  // Development
+  'education_spending',
+  'poverty_headcount',
+  // Energy
+  'co2_emissions',
+  'renewable_energy',
 ];

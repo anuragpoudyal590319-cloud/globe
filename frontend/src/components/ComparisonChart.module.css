@@ -1,0 +1,68 @@
+.chartContainer {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.chartTitle {
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #374151;
+}
+
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #6b7280;
+  font-size: 0.9rem;
+  background: #1e293b;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.customTooltip {
+  background: #1e293b;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.tooltipYear {
+  color: #e5e7eb;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #374151;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.tooltipDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tooltipLabel {
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.tooltipValue {
+  color: #e5e7eb;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-left: auto;
+}

@@ -19,14 +19,29 @@ interface HistoryChartProps {
 
 // Color palette for different indicators
 const INDICATOR_COLORS: Record<IndicatorType, string> = {
-  exchange: '#3b82f6',      // Blue
-  inflation: '#ef4444',      // Red
-  interest: '#f59e0b',       // Amber
-  gdp_per_capita: '#10b981', // Emerald
-  unemployment: '#8b5cf6',   // Purple
-  government_debt: '#ec4899', // Pink
-  gini: '#06b6d4',           // Cyan
-  life_expectancy: '#22c55e', // Green
+  exchange: '#3b82f6',         // Blue
+  inflation: '#ef4444',        // Red
+  interest: '#f59e0b',         // Amber
+  gdp_per_capita: '#10b981',   // Emerald
+  unemployment: '#8b5cf6',     // Purple
+  government_debt: '#ec4899',  // Pink
+  gini: '#06b6d4',             // Cyan
+  life_expectancy: '#22c55e',  // Green
+  // Trade
+  exports: '#14b8a6',          // Teal
+  imports: '#f97316',          // Orange
+  fdi_inflows: '#a855f7',      // Violet
+  // Labor
+  labor_force: '#0ea5e9',      // Sky
+  female_employment: '#d946ef', // Fuchsia
+  // Finance
+  domestic_credit: '#eab308',  // Yellow
+  // Development
+  education_spending: '#6366f1', // Indigo
+  poverty_headcount: '#dc2626', // Red-600
+  // Energy
+  co2_emissions: '#71717a',    // Gray
+  renewable_energy: '#84cc16', // Lime
 };
 
 // Display names for indicators
@@ -39,6 +54,21 @@ const INDICATOR_NAMES: Record<IndicatorType, string> = {
   government_debt: 'Gov. Debt (% GDP)',
   gini: 'GINI Index',
   life_expectancy: 'Life Expectancy (years)',
+  // Trade
+  exports: 'Exports (% GDP)',
+  imports: 'Imports (% GDP)',
+  fdi_inflows: 'FDI Inflows (% GDP)',
+  // Labor
+  labor_force: 'Labor Force Participation %',
+  female_employment: 'Female Employment %',
+  // Finance
+  domestic_credit: 'Domestic Credit (% GDP)',
+  // Development
+  education_spending: 'Education Spending (% GDP)',
+  poverty_headcount: 'Poverty Rate %',
+  // Energy
+  co2_emissions: 'CO2 Emissions (tons/capita)',
+  renewable_energy: 'Renewable Energy %',
 };
 
 // Format value for tooltip
@@ -52,7 +82,10 @@ function formatValue(value: number, indicator: IndicatorType): string {
       return `${value.toFixed(1)} years`;
     case 'gini':
       return value.toFixed(1);
+    case 'co2_emissions':
+      return `${value.toFixed(2)} tons`;
     default:
+      // All percentage-based indicators
       return `${value.toFixed(2)}%`;
   }
 }
@@ -110,14 +143,19 @@ export function HistoryChart({ data, selectedIndicators }: HistoryChartProps) {
     // GDP per capita is usually much larger than percentages
     const hasGdp = selectedIndicators.includes('gdp_per_capita');
     const hasPercentage = selectedIndicators.some(i => 
-      ['inflation', 'interest', 'unemployment', 'government_debt'].includes(i)
+      [
+        'inflation', 'interest', 'unemployment', 'government_debt',
+        'exports', 'imports', 'fdi_inflows', 'labor_force', 'female_employment',
+        'domestic_credit', 'education_spending', 'poverty_headcount', 'renewable_energy'
+      ].includes(i)
     );
     
     return hasGdp && hasPercentage;
   }, [selectedIndicators]);
 
   // Determine which indicators go on which axis
-  const LEFT_AXIS_TYPES: IndicatorType[] = ['gdp_per_capita', 'exchange'];
+  // Left axis: absolute values (GDP, exchange rate, CO2, life expectancy)
+  const LEFT_AXIS_TYPES: IndicatorType[] = ['gdp_per_capita', 'exchange', 'co2_emissions', 'life_expectancy', 'gini'];
   const rightAxisIndicators = selectedIndicators.filter(i => 
     !LEFT_AXIS_TYPES.includes(i)
   );

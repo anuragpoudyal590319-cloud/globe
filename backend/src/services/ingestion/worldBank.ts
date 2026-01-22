@@ -120,3 +120,48 @@ export async function fetchGiniIndex(): Promise<IndicatorRecord[]> {
 export async function fetchLifeExpectancy(): Promise<IndicatorRecord[]> {
   return fetchWorldBankIndicator(config.worldBankCodes.life_expectancy);
 }
+
+// Trade indicators
+export async function fetchExports(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.exports);
+}
+
+export async function fetchImports(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.imports);
+}
+
+export async function fetchFdiInflows(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.fdi_inflows);
+}
+
+// Labor indicators
+export async function fetchLaborForce(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.labor_force);
+}
+
+export async function fetchFemaleEmployment(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.female_employment);
+}
+
+// Finance indicators
+export async function fetchDomesticCredit(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.domestic_credit);
+}
+
+// Development indicators
+export async function fetchEducationSpending(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.education_spending);
+}
+
+export async function fetchPovertyHeadcount(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.poverty_headcount);
+}
+
+// Energy indicators
+export async function fetchCo2Emissions(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.co2_emissions);
+}
+
+export async function fetchRenewableEnergy(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.renewable_energy);
+}

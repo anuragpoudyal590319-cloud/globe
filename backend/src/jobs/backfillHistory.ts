@@ -26,6 +26,21 @@ export async function runBackfill(): Promise<void> {
     { type: 'government_debt', id: config.indicators.government_debt, code: config.worldBankCodes.government_debt },
     { type: 'gini', id: config.indicators.gini, code: config.worldBankCodes.gini },
     { type: 'life_expectancy', id: config.indicators.life_expectancy, code: config.worldBankCodes.life_expectancy },
+    // Trade indicators
+    { type: 'exports', id: config.indicators.exports, code: config.worldBankCodes.exports },
+    { type: 'imports', id: config.indicators.imports, code: config.worldBankCodes.imports },
+    { type: 'fdi_inflows', id: config.indicators.fdi_inflows, code: config.worldBankCodes.fdi_inflows },
+    // Labor indicators
+    { type: 'labor_force', id: config.indicators.labor_force, code: config.worldBankCodes.labor_force },
+    { type: 'female_employment', id: config.indicators.female_employment, code: config.worldBankCodes.female_employment },
+    // Finance indicators
+    { type: 'domestic_credit', id: config.indicators.domestic_credit, code: config.worldBankCodes.domestic_credit },
+    // Development indicators
+    { type: 'education_spending', id: config.indicators.education_spending, code: config.worldBankCodes.education_spending },
+    { type: 'poverty_headcount', id: config.indicators.poverty_headcount, code: config.worldBankCodes.poverty_headcount },
+    // Energy indicators
+    { type: 'co2_emissions', id: config.indicators.co2_emissions, code: config.worldBankCodes.co2_emissions },
+    { type: 'renewable_energy', id: config.indicators.renewable_energy, code: config.worldBankCodes.renewable_energy },
   ];
   
   const results: Array<{ type: string; success: boolean; error?: string }> = [];

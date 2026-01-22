@@ -7,6 +7,21 @@ import {
   fetchGovernmentDebt,
   fetchGiniIndex,
   fetchLifeExpectancy,
+  // Trade indicators
+  fetchExports,
+  fetchImports,
+  fetchFdiInflows,
+  // Labor indicators
+  fetchLaborForce,
+  fetchFemaleEmployment,
+  // Finance indicators
+  fetchDomesticCredit,
+  // Development indicators
+  fetchEducationSpending,
+  fetchPovertyHeadcount,
+  // Energy indicators
+  fetchCo2Emissions,
+  fetchRenewableEnergy,
 } from '../services/ingestion/worldBank.js';
 import { fetchExchangeRates } from '../services/ingestion/exchange.js';
 import { upsertIndicatorValues, logIngestion } from '../services/ingestion/upsert.js';
@@ -24,6 +39,21 @@ export async function runAllIngestion(): Promise<void> {
     { name: 'government_debt', id: config.indicators.government_debt, fn: fetchGovernmentDebt },
     { name: 'gini', id: config.indicators.gini, fn: fetchGiniIndex },
     { name: 'life_expectancy', id: config.indicators.life_expectancy, fn: fetchLifeExpectancy },
+    // Trade indicators
+    { name: 'exports', id: config.indicators.exports, fn: fetchExports },
+    { name: 'imports', id: config.indicators.imports, fn: fetchImports },
+    { name: 'fdi_inflows', id: config.indicators.fdi_inflows, fn: fetchFdiInflows },
+    // Labor indicators
+    { name: 'labor_force', id: config.indicators.labor_force, fn: fetchLaborForce },
+    { name: 'female_employment', id: config.indicators.female_employment, fn: fetchFemaleEmployment },
+    // Finance indicators
+    { name: 'domestic_credit', id: config.indicators.domestic_credit, fn: fetchDomesticCredit },
+    // Development indicators
+    { name: 'education_spending', id: config.indicators.education_spending, fn: fetchEducationSpending },
+    { name: 'poverty_headcount', id: config.indicators.poverty_headcount, fn: fetchPovertyHeadcount },
+    // Energy indicators
+    { name: 'co2_emissions', id: config.indicators.co2_emissions, fn: fetchCo2Emissions },
+    { name: 'renewable_energy', id: config.indicators.renewable_energy, fn: fetchRenewableEnergy },
   ];
 
   for (const job of jobs) {
