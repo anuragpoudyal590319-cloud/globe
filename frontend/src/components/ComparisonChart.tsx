@@ -52,6 +52,9 @@ const INDICATOR_NAMES: Record<IndicatorType, string> = {
   poverty_headcount: 'Poverty Rate %',
   co2_emissions: 'CO2 Emissions (tons/capita)',
   renewable_energy: 'Renewable Energy %',
+  market_cap: 'Market Cap (% GDP)',
+  stocks_traded: 'Stocks Traded (% GDP)',
+  stock_turnover: 'Stock Turnover %',
 };
 
 // Format value for tooltip
