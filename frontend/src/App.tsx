@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { api, Country, IndicatorValue, IndicatorType, MetaResponse } from './api/client';
 import { ChoroplethMap } from './components/ChoroplethMap';
 import { CountryModal } from './components/CountryModal';
@@ -9,35 +9,51 @@ interface IndicatorOption {
   value: IndicatorType;
   label: string;
   icon: string;
-  shortLabel: string;
   category: string;
 }
 
+// Category definitions with icons
+const CATEGORIES = [
+  { id: 'Economy', icon: '💰', label: 'Economy' },
+  { id: 'Trade', icon: '🌐', label: 'Trade' },
+  { id: 'Labor', icon: '👥', label: 'Labor' },
+  { id: 'Finance', icon: '🏦', label: 'Finance' },
+  { id: 'Development', icon: '📈', label: 'Development' },
+  { id: 'Energy', icon: '⚡', label: 'Energy' },
+  { id: 'Markets', icon: '📊', label: 'Markets' },
+] as const;
+
+type CategoryId = typeof CATEGORIES[number]['id'];
+
 const INDICATOR_OPTIONS: IndicatorOption[] = [
   // Economy
-  { value: 'gdp_per_capita', label: 'GDP per Capita', shortLabel: 'GDP', icon: '💰', category: 'Economy' },
-  { value: 'inflation', label: 'Inflation', shortLabel: 'Infl', icon: '📊', category: 'Economy' },
-  { value: 'interest', label: 'Interest Rate', shortLabel: 'Int', icon: '📈', category: 'Economy' },
-  { value: 'exchange', label: 'Exchange Rate', shortLabel: 'FX', icon: '💱', category: 'Economy' },
-  { value: 'government_debt', label: 'Gov. Debt', shortLabel: 'Debt', icon: '🏛️', category: 'Economy' },
+  { value: 'gdp_per_capita', label: 'GDP per Capita', icon: '💵', category: 'Economy' },
+  { value: 'inflation', label: 'Inflation', icon: '📊', category: 'Economy' },
+  { value: 'interest', label: 'Interest Rate', icon: '📈', category: 'Economy' },
+  { value: 'exchange', label: 'Exchange Rate', icon: '💱', category: 'Economy' },
+  { value: 'government_debt', label: 'Gov. Debt', icon: '🏛️', category: 'Economy' },
   // Trade
-  { value: 'exports', label: 'Exports', shortLabel: 'Exp', icon: '📦', category: 'Trade' },
-  { value: 'imports', label: 'Imports', shortLabel: 'Imp', icon: '🚢', category: 'Trade' },
-  { value: 'fdi_inflows', label: 'FDI Inflows', shortLabel: 'FDI', icon: '💼', category: 'Trade' },
+  { value: 'exports', label: 'Exports', icon: '📦', category: 'Trade' },
+  { value: 'imports', label: 'Imports', icon: '🚢', category: 'Trade' },
+  { value: 'fdi_inflows', label: 'FDI Inflows', icon: '💼', category: 'Trade' },
   // Labor
-  { value: 'unemployment', label: 'Unemployment', shortLabel: 'Unemp', icon: '👥', category: 'Labor' },
-  { value: 'labor_force', label: 'Labor Force', shortLabel: 'Labor', icon: '🏭', category: 'Labor' },
-  { value: 'female_employment', label: 'Female Employment', shortLabel: 'FemEmp', icon: '👩‍💼', category: 'Labor' },
+  { value: 'unemployment', label: 'Unemployment', icon: '📉', category: 'Labor' },
+  { value: 'labor_force', label: 'Labor Force', icon: '🏭', category: 'Labor' },
+  { value: 'female_employment', label: 'Female Employment', icon: '👩‍💼', category: 'Labor' },
   // Finance
-  { value: 'domestic_credit', label: 'Domestic Credit', shortLabel: 'Credit', icon: '🏦', category: 'Finance' },
+  { value: 'domestic_credit', label: 'Domestic Credit', icon: '💳', category: 'Finance' },
   // Development
-  { value: 'gini', label: 'GINI Index', shortLabel: 'GINI', icon: '⚖️', category: 'Development' },
-  { value: 'life_expectancy', label: 'Life Expectancy', shortLabel: 'Life', icon: '❤️', category: 'Development' },
-  { value: 'education_spending', label: 'Education Spending', shortLabel: 'Edu', icon: '🎓', category: 'Development' },
-  { value: 'poverty_headcount', label: 'Poverty Rate', shortLabel: 'Poverty', icon: '🏚️', category: 'Development' },
+  { value: 'gini', label: 'GINI Index', icon: '⚖️', category: 'Development' },
+  { value: 'life_expectancy', label: 'Life Expectancy', icon: '❤️', category: 'Development' },
+  { value: 'education_spending', label: 'Education', icon: '🎓', category: 'Development' },
+  { value: 'poverty_headcount', label: 'Poverty Rate', icon: '🏚️', category: 'Development' },
   // Energy
-  { value: 'co2_emissions', label: 'CO2 Emissions', shortLabel: 'CO2', icon: '🏭', category: 'Energy' },
-  { value: 'renewable_energy', label: 'Renewable Energy', shortLabel: 'Renew', icon: '🌱', category: 'Energy' },
+  { value: 'co2_emissions', label: 'CO2 Emissions', icon: '🏭', category: 'Energy' },
+  { value: 'renewable_energy', label: 'Renewables', icon: '🌱', category: 'Energy' },
+  // Markets
+  { value: 'market_cap', label: 'Market Cap', icon: '📈', category: 'Markets' },
+  { value: 'stocks_traded', label: 'Stocks Traded', icon: '📊', category: 'Markets' },
+  { value: 'stock_turnover', label: 'Turnover', icon: '🔄', category: 'Markets' },
 ];
 
 function formatLastUpdated(meta: MetaResponse | null, type: IndicatorType): string {
@@ -56,11 +72,24 @@ export default function App() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [indicatorValues, setIndicatorValues] = useState<IndicatorValue[]>([]);
   const [indicatorType, setIndicatorType] = useState<IndicatorType>('gdp_per_capita');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryId>('Economy');
   const [meta, setMeta] = useState<MetaResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+
+  // Get indicators for the selected category
+  const categoryIndicators = useMemo(() => 
+    INDICATOR_OPTIONS.filter(opt => opt.category === selectedCategory),
+    [selectedCategory]
+  );
+
+  // Get current indicator details
+  const currentIndicator = useMemo(() => 
+    INDICATOR_OPTIONS.find(opt => opt.value === indicatorType),
+    [indicatorType]
+  );
 
   // Initial load: countries + meta
   useEffect(() => {
@@ -117,33 +146,74 @@ export default function App() {
     setSelectedCountry(null);
   };
 
+  // Handle category change - also select first indicator in that category
+  const handleCategoryChange = (categoryId: CategoryId) => {
+    setSelectedCategory(categoryId);
+    const firstIndicator = INDICATOR_OPTIONS.find(opt => opt.category === categoryId);
+    if (firstIndicator) {
+      setIndicatorType(firstIndicator.value);
+    }
+  };
+
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <div className={styles.brand}>
-          <img src="/globe.svg" alt="Globe" className={styles.logo} />
-          <h1 className={styles.title}>World Economic Map</h1>
-        </div>
-        
-        <nav className={styles.nav}>
-          {INDICATOR_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              className={`${styles.navButton} ${indicatorType === option.value ? styles.active : ''}`}
-              onClick={() => handleIndicatorChange(option.value)}
-              title={option.label}
+        <div className={styles.headerTop}>
+          <div className={styles.brand}>
+            <img src="/globe.svg" alt="Globe" className={styles.logo} />
+            <h1 className={styles.title}>World Economic Map</h1>
+          </div>
+
+          <div className={styles.headerActions}>
+            <button 
+              className={styles.compareButtonHeader}
+              onClick={() => setShowComparison(true)}
             >
-              <span className={styles.navIcon}>{option.icon}</span>
-              <span className={styles.navLabel}>{option.label}</span>
-              <span className={styles.navShortLabel}>{option.shortLabel}</span>
+              Compare Countries
+            </button>
+            <div className={styles.meta}>
+              <span className={styles.metaLabel}>Updated:</span>
+              <span className={styles.metaValue}>{formatLastUpdated(meta, indicatorType)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Category tabs */}
+        <nav className={styles.categoryNav}>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              className={`${styles.categoryTab} ${selectedCategory === cat.id ? styles.categoryActive : ''}`}
+              onClick={() => handleCategoryChange(cat.id)}
+            >
+              <span className={styles.categoryIcon}>{cat.icon}</span>
+              <span className={styles.categoryLabel}>{cat.label}</span>
             </button>
           ))}
         </nav>
 
-        <div className={styles.meta}>
-          <span className={styles.metaLabel}>Last updated:</span>
-          <span className={styles.metaValue}>{formatLastUpdated(meta, indicatorType)}</span>
+        {/* Indicator buttons for selected category */}
+        <div className={styles.indicatorNav}>
+          {categoryIndicators.map((option) => (
+            <button
+              key={option.value}
+              className={`${styles.indicatorButton} ${indicatorType === option.value ? styles.indicatorActive : ''}`}
+              onClick={() => handleIndicatorChange(option.value)}
+            >
+              <span className={styles.indicatorIcon}>{option.icon}</span>
+              <span className={styles.indicatorLabel}>{option.label}</span>
+            </button>
+          ))}
         </div>
+
+        {/* Current selection display */}
+        {currentIndicator && (
+          <div className={styles.currentSelection}>
+            <span className={styles.currentIcon}>{currentIndicator.icon}</span>
+            <span className={styles.currentLabel}>{currentIndicator.label}</span>
+            <span className={styles.currentCategory}>({selectedCategory})</span>
+          </div>
+        )}
       </header>
 
       <main className={styles.main}>
@@ -170,18 +240,11 @@ export default function App() {
       </main>
 
       <footer className={styles.footer}>
-        <span>Data sources: World Bank, Open Exchange Rates API</span>
+        <span>Data: World Bank, Open Exchange Rates</span>
         <span className={styles.separator}>•</span>
-        <span>{indicatorValues.length} countries with data</span>
+        <span>{indicatorValues.length} countries</span>
         <span className={styles.separator}>•</span>
         <span className={styles.hint}>Click a country for historical data</span>
-        <span className={styles.separator}>•</span>
-        <button 
-          className={styles.compareButton}
-          onClick={() => setShowComparison(true)}
-        >
-          Compare Countries
-        </button>
       </footer>
 
       {selectedCountry && (

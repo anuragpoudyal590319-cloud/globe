@@ -51,7 +51,11 @@ export type IndicatorType =
   | 'poverty_headcount'
   // Energy
   | 'co2_emissions'
-  | 'renewable_energy';
+  | 'renewable_energy'
+  // Markets
+  | 'market_cap'
+  | 'stocks_traded'
+  | 'stock_turnover';
 
 export interface HistoryDataPoint {
   year: number;

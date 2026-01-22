@@ -22,6 +22,10 @@ import {
   // Energy indicators
   fetchCo2Emissions,
   fetchRenewableEnergy,
+  // Markets indicators
+  fetchMarketCap,
+  fetchStocksTraded,
+  fetchStockTurnover,
 } from '../services/ingestion/worldBank.js';
 import { fetchExchangeRates } from '../services/ingestion/exchange.js';
 import { upsertIndicatorValues, logIngestion } from '../services/ingestion/upsert.js';
@@ -54,6 +58,10 @@ export async function runAllIngestion(): Promise<void> {
     // Energy indicators
     { name: 'co2_emissions', id: config.indicators.co2_emissions, fn: fetchCo2Emissions },
     { name: 'renewable_energy', id: config.indicators.renewable_energy, fn: fetchRenewableEnergy },
+    // Markets indicators
+    { name: 'market_cap', id: config.indicators.market_cap, fn: fetchMarketCap },
+    { name: 'stocks_traded', id: config.indicators.stocks_traded, fn: fetchStocksTraded },
+    { name: 'stock_turnover', id: config.indicators.stock_turnover, fn: fetchStockTurnover },
   ];
 
   for (const job of jobs) {

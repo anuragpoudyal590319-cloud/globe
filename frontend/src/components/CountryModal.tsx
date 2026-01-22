@@ -32,6 +32,10 @@ const ALL_INDICATORS: { type: IndicatorType; label: string; icon: string }[] = [
   // Energy
   { type: 'co2_emissions', label: 'CO2 Emissions', icon: '🏭' },
   { type: 'renewable_energy', label: 'Renewable Energy', icon: '🌱' },
+  // Markets
+  { type: 'market_cap', label: 'Market Cap', icon: '📈' },
+  { type: 'stocks_traded', label: 'Stocks Traded', icon: '📊' },
+  { type: 'stock_turnover', label: 'Stock Turnover', icon: '🔄' },
 ];
 
 export function CountryModal({ country, onClose }: CountryModalProps) {

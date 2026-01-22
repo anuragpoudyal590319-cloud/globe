@@ -165,3 +165,16 @@ export async function fetchCo2Emissions(): Promise<IndicatorRecord[]> {
 export async function fetchRenewableEnergy(): Promise<IndicatorRecord[]> {
   return fetchWorldBankIndicator(config.worldBankCodes.renewable_energy);
 }
+
+// Markets indicators
+export async function fetchMarketCap(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.market_cap);
+}
+
+export async function fetchStocksTraded(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.stocks_traded);
+}
+
+export async function fetchStockTurnover(): Promise<IndicatorRecord[]> {
+  return fetchWorldBankIndicator(config.worldBankCodes.stock_turnover);
+}

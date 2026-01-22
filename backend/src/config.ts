@@ -45,6 +45,10 @@ export const config = {
     // New indicators (Energy)
     co2_emissions: '20202020-2020-2020-2020-202020202020',
     renewable_energy: '30303030-3030-3030-3030-303030303030',
+    // New indicators (Markets)
+    market_cap: '40404040-4040-4040-4040-404040404040',
+    stocks_traded: '50505050-5050-5050-5050-505050505050',
+    stock_turnover: '60606060-6060-6060-6060-606060606060',
   },
   // World Bank indicator codes for each type
   worldBankCodes: {
@@ -70,6 +74,10 @@ export const config = {
     // Energy indicators
     co2_emissions: 'EN.ATM.CO2E.PC',
     renewable_energy: 'EG.FEC.RNEW.ZS',
+    // Markets indicators
+    market_cap: 'CM.MKT.LCAP.GD.ZS',
+    stocks_traded: 'CM.MKT.TRAD.GD.ZS',
+    stock_turnover: 'CM.MKT.TRNR',
   },
   // External API URLs
   apis: {
@@ -103,7 +111,11 @@ export type IndicatorType =
   | 'poverty_headcount'
   // Energy
   | 'co2_emissions'
-  | 'renewable_energy';
+  | 'renewable_energy'
+  // Markets
+  | 'market_cap'
+  | 'stocks_traded'
+  | 'stock_turnover';
 
 export const ALL_INDICATOR_TYPES: IndicatorType[] = [
   'interest',
@@ -129,4 +141,8 @@ export const ALL_INDICATOR_TYPES: IndicatorType[] = [
   // Energy
   'co2_emissions',
   'renewable_energy',
+  // Markets
+  'market_cap',
+  'stocks_traded',
+  'stock_turnover',
 ];

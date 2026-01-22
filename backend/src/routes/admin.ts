@@ -41,20 +41,16 @@ const ALL_INDICATORS = [
   { type: 'poverty_headcount', id: config.indicators.poverty_headcount, code: config.worldBankCodes.poverty_headcount },
   { type: 'co2_emissions', id: config.indicators.co2_emissions, code: config.worldBankCodes.co2_emissions },
   { type: 'renewable_energy', id: config.indicators.renewable_energy, code: config.worldBankCodes.renewable_energy },
+  { type: 'market_cap', id: config.indicators.market_cap, code: config.worldBankCodes.market_cap },
+  { type: 'stocks_traded', id: config.indicators.stocks_traded, code: config.worldBankCodes.stocks_traded },
+  { type: 'stock_turnover', id: config.indicators.stock_turnover, code: config.worldBankCodes.stock_turnover },
 ];
 
-// Only the NEW indicators added in this update
+// Only the NEW indicators added (stock market indicators)
 const NEW_INDICATORS = [
-  { type: 'exports', id: config.indicators.exports, code: config.worldBankCodes.exports },
-  { type: 'imports', id: config.indicators.imports, code: config.worldBankCodes.imports },
-  { type: 'fdi_inflows', id: config.indicators.fdi_inflows, code: config.worldBankCodes.fdi_inflows },
-  { type: 'labor_force', id: config.indicators.labor_force, code: config.worldBankCodes.labor_force },
-  { type: 'female_employment', id: config.indicators.female_employment, code: config.worldBankCodes.female_employment },
-  { type: 'domestic_credit', id: config.indicators.domestic_credit, code: config.worldBankCodes.domestic_credit },
-  { type: 'education_spending', id: config.indicators.education_spending, code: config.worldBankCodes.education_spending },
-  { type: 'poverty_headcount', id: config.indicators.poverty_headcount, code: config.worldBankCodes.poverty_headcount },
-  { type: 'co2_emissions', id: config.indicators.co2_emissions, code: config.worldBankCodes.co2_emissions },
-  { type: 'renewable_energy', id: config.indicators.renewable_energy, code: config.worldBankCodes.renewable_energy },
+  { type: 'market_cap', id: config.indicators.market_cap, code: config.worldBankCodes.market_cap },
+  { type: 'stocks_traded', id: config.indicators.stocks_traded, code: config.worldBankCodes.stocks_traded },
+  { type: 'stock_turnover', id: config.indicators.stock_turnover, code: config.worldBankCodes.stock_turnover },
 ];
 
 // Validate admin secret

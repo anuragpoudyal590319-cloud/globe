@@ -214,6 +214,31 @@ function getColorInterpolator(type: IndicatorType) {
         const b = Math.round(43 + (94 - 43) * t);
         return `rgb(${r}, ${g}, ${b})`;
       };
+    // Markets indicators
+    case 'market_cap':
+      // Light emerald to deep emerald (higher market cap shown darker)
+      return (t: number) => {
+        const r = Math.round(209 + (6 - 209) * t);
+        const g = Math.round(250 + (95 - 250) * t);
+        const b = Math.round(229 + (70 - 229) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'stocks_traded':
+      // Light sky blue to deep blue (higher trading shown darker)
+      return (t: number) => {
+        const r = Math.round(186 + (29 - 186) * t);
+        const g = Math.round(230 + (78 - 230) * t);
+        const b = Math.round(253 + (216 - 253) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+    case 'stock_turnover':
+      // Light amber to deep orange (higher turnover shown darker)
+      return (t: number) => {
+        const r = Math.round(254 + (234 - 254) * t);
+        const g = Math.round(243 + (88 - 243) * t);
+        const b = Math.round(199 + (12 - 199) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
     default:
       // Default blue gradient
       return (t: number) => {

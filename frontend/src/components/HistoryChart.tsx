@@ -42,6 +42,10 @@ const INDICATOR_COLORS: Record<IndicatorType, string> = {
   // Energy
   co2_emissions: '#71717a',    // Gray
   renewable_energy: '#84cc16', // Lime
+  // Markets
+  market_cap: '#059669',       // Emerald-600
+  stocks_traded: '#0284c7',    // Sky-600
+  stock_turnover: '#ea580c',   // Orange-600
 };
 
 // Display names for indicators
@@ -69,6 +73,10 @@ const INDICATOR_NAMES: Record<IndicatorType, string> = {
   // Energy
   co2_emissions: 'CO2 Emissions (tons/capita)',
   renewable_energy: 'Renewable Energy %',
+  // Markets
+  market_cap: 'Market Cap (% GDP)',
+  stocks_traded: 'Stocks Traded (% GDP)',
+  stock_turnover: 'Stock Turnover %',
 };
 
 // Format value for tooltip
@@ -146,7 +154,8 @@ export function HistoryChart({ data, selectedIndicators }: HistoryChartProps) {
       [
         'inflation', 'interest', 'unemployment', 'government_debt',
         'exports', 'imports', 'fdi_inflows', 'labor_force', 'female_employment',
-        'domestic_credit', 'education_spending', 'poverty_headcount', 'renewable_energy'
+        'domestic_credit', 'education_spending', 'poverty_headcount', 'renewable_energy',
+        'market_cap', 'stocks_traded', 'stock_turnover'
       ].includes(i)
     );
     

@@ -24,6 +24,10 @@ import {
   // Energy indicators
   fetchCo2Emissions,
   fetchRenewableEnergy,
+  // Markets indicators
+  fetchMarketCap,
+  fetchStocksTraded,
+  fetchStockTurnover,
 } from '../services/ingestion/worldBank.js';
 import { fetchExchangeRates } from '../services/ingestion/exchange.js';
 import { upsertIndicatorValues, logIngestion } from '../services/ingestion/upsert.js';
@@ -161,6 +165,22 @@ export function startScheduler(): void {
     runIngestionJob('renewable_energy', config.indicators.renewable_energy, fetchRenewableEnergy);
   }, { timezone: tz });
   console.log('[Scheduler] Scheduled: renewable_energy (monthly 1st at 06:30)');
+
+  // Markets indicators
+  cron.schedule('40 6 1 * *', () => {
+    runIngestionJob('market_cap', config.indicators.market_cap, fetchMarketCap);
+  }, { timezone: tz });
+  console.log('[Scheduler] Scheduled: market_cap (monthly 1st at 06:40)');
+
+  cron.schedule('50 6 1 * *', () => {
+    runIngestionJob('stocks_traded', config.indicators.stocks_traded, fetchStocksTraded);
+  }, { timezone: tz });
+  console.log('[Scheduler] Scheduled: stocks_traded (monthly 1st at 06:50)');
+
+  cron.schedule('0 7 1 * *', () => {
+    runIngestionJob('stock_turnover', config.indicators.stock_turnover, fetchStockTurnover);
+  }, { timezone: tz });
+  console.log('[Scheduler] Scheduled: stock_turnover (monthly 1st at 07:00)');
 }
 
 // Export for manual runs

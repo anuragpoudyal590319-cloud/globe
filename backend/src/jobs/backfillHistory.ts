@@ -41,6 +41,10 @@ export async function runBackfill(): Promise<void> {
     // Energy indicators
     { type: 'co2_emissions', id: config.indicators.co2_emissions, code: config.worldBankCodes.co2_emissions },
     { type: 'renewable_energy', id: config.indicators.renewable_energy, code: config.worldBankCodes.renewable_energy },
+    // Markets indicators
+    { type: 'market_cap', id: config.indicators.market_cap, code: config.worldBankCodes.market_cap },
+    { type: 'stocks_traded', id: config.indicators.stocks_traded, code: config.worldBankCodes.stocks_traded },
+    { type: 'stock_turnover', id: config.indicators.stock_turnover, code: config.worldBankCodes.stock_turnover },
   ];
   
   const results: Array<{ type: string; success: boolean; error?: string }> = [];
