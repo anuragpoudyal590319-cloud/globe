@@ -9,6 +9,7 @@ import { indicatorsRoutes } from './routes/indicators.js';
 import { metaRoutes } from './routes/meta.js';
 import { historyRoutes } from './routes/history.js';
 import { compareRoutes } from './routes/compare.js';
+import { adminRoutes } from './routes/admin.js';
 import { startScheduler } from './jobs/scheduler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,7 @@ async function start(): Promise<void> {
     // Register CORS (more restrictive in production)
     await fastify.register(cors, {
       origin: config.server.isProduction ? false : true, // No CORS needed when serving static files
-      methods: ['GET'],
+      methods: ['GET', 'POST'],
     });
 
     // Register API routes
@@ -34,63 +35,11 @@ async function start(): Promise<void> {
     await fastify.register(metaRoutes);
     await fastify.register(historyRoutes);
     await fastify.register(compareRoutes);
+    await fastify.register(adminRoutes);
 
     // Health check
     fastify.get('/api/health', async () => {
       return { status: 'ok', timestamp: new Date().toISOString() };
-    });
-
-    // Trigger ingestion endpoint (for initial data fetch)
-    fastify.get('/api/admin/ingest', async (request, reply) => {
-      // Simple security: check for a secret token (set via env var)
-      const secret = process.env.INGEST_SECRET || 'dev-secret-change-in-production';
-      const providedSecret = (request.query as { secret?: string }).secret || '';
-      
-      if (providedSecret !== secret) {
-        return reply.status(401).send({ 
-          error: 'Unauthorized',
-          message: 'Add ?secret=YOUR_SECRET to the URL. Default secret: dev-secret-change-in-production'
-        });
-      }
-
-      // Run ingestion in background (don't block the response)
-      import('./jobs/runOnce.js').then(({ runAllIngestion }) => {
-        runAllIngestion().catch(err => {
-          console.error('[API] Ingestion error:', err);
-        });
-      });
-
-      return { 
-        status: 'started', 
-        message: 'Ingestion started in background. Check Railway logs for progress.',
-        timestamp: new Date().toISOString() 
-      };
-    });
-
-    // Trigger historical backfill endpoint (fetches ALL years of data)
-    fastify.get('/api/admin/backfill', async (request, reply) => {
-      const secret = process.env.INGEST_SECRET || 'dev-secret-change-in-production';
-      const providedSecret = (request.query as { secret?: string }).secret || '';
-      
-      if (providedSecret !== secret) {
-        return reply.status(401).send({ 
-          error: 'Unauthorized',
-          message: 'Add ?secret=YOUR_SECRET to the URL'
-        });
-      }
-
-      // Run backfill in background (this takes 10-15 minutes)
-      import('./jobs/backfillHistory.js').then(({ runBackfill }) => {
-        runBackfill().catch(err => {
-          console.error('[API] Backfill error:', err);
-        });
-      });
-
-      return { 
-        status: 'started', 
-        message: 'Historical backfill started. This takes 10-15 minutes. Check Railway logs for progress.',
-        timestamp: new Date().toISOString() 
-      };
     });
 
     // In production, serve the frontend static files
