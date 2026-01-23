@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { IndicatorType, CompareDataPoint } from '../api/client';
+import { INDICATOR_DEFINITIONS } from '../data/indicators';
 import styles from './ComparisonChart.module.css';
 
 interface ComparisonChartProps {
@@ -32,30 +33,18 @@ const COUNTRY_COLORS = [
   '#6366f1', // Indigo
 ];
 
-// Display names for indicators
-const INDICATOR_NAMES: Record<IndicatorType, string> = {
-  exchange: 'Exchange Rate',
-  inflation: 'Inflation %',
-  interest: 'Interest Rate %',
-  gdp_per_capita: 'GDP per Capita ($)',
-  unemployment: 'Unemployment %',
-  government_debt: 'Gov. Debt (% GDP)',
-  gini: 'GINI Index',
-  life_expectancy: 'Life Expectancy (years)',
-  exports: 'Exports (% GDP)',
-  imports: 'Imports (% GDP)',
-  fdi_inflows: 'FDI Inflows (% GDP)',
-  labor_force: 'Labor Force Participation %',
-  female_employment: 'Female Employment %',
-  domestic_credit: 'Domestic Credit (% GDP)',
-  education_spending: 'Education Spending (% GDP)',
-  poverty_headcount: 'Poverty Rate %',
-  co2_emissions: 'CO2 Emissions (tons/capita)',
-  renewable_energy: 'Renewable Energy %',
-  market_cap: 'Market Cap (% GDP)',
-  stocks_traded: 'Stocks Traded (% GDP)',
-  stock_turnover: 'Stock Turnover %',
-};
+// Get display name for indicator (with unit)
+function getIndicatorName(type: IndicatorType): string {
+  const info = INDICATOR_DEFINITIONS[type];
+  if (info.unit === '% of GDP') {
+    return `${info.label} (% of GDP)`;
+  } else if (info.unit === '%') {
+    return `${info.label} %`;
+  } else if (info.unit) {
+    return `${info.label} (${info.unit})`;
+  }
+  return info.label;
+}
 
 // Format value for tooltip
 function formatValue(value: number, indicator: IndicatorType): string {
@@ -130,14 +119,14 @@ export function ComparisonChart({ data, countries, indicator }: ComparisonChartP
   if (chartData.length === 0) {
     return (
       <div className={styles.noData}>
-        <span>No data available for {INDICATOR_NAMES[indicator]}</span>
+        <span>No data available for {getIndicatorName(indicator)}</span>
       </div>
     );
   }
 
   return (
     <div className={styles.chartContainer}>
-      <h3 className={styles.chartTitle}>{INDICATOR_NAMES[indicator]}</h3>
+      <h3 className={styles.chartTitle}>{getIndicatorName(indicator)}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#2a3547" />

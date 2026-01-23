@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api, IndicatorType, HistoryResponse, Country } from '../api/client';
 import { HistoryChart } from './HistoryChart';
+import { INDICATOR_DEFINITIONS } from '../data/indicators';
 import styles from './CountryModal.module.css';
 
 interface CountryModalProps {
@@ -8,35 +9,8 @@ interface CountryModalProps {
   onClose: () => void;
 }
 
-const ALL_INDICATORS: { type: IndicatorType; label: string; icon: string }[] = [
-  // Economy
-  { type: 'gdp_per_capita', label: 'GDP per Capita', icon: '💰' },
-  { type: 'inflation', label: 'Inflation', icon: '📊' },
-  { type: 'interest', label: 'Interest Rate', icon: '📈' },
-  { type: 'government_debt', label: 'Gov. Debt (% GDP)', icon: '🏛️' },
-  // Trade
-  { type: 'exports', label: 'Exports (% GDP)', icon: '📦' },
-  { type: 'imports', label: 'Imports (% GDP)', icon: '🚢' },
-  { type: 'fdi_inflows', label: 'FDI Inflows (% GDP)', icon: '💼' },
-  // Labor
-  { type: 'unemployment', label: 'Unemployment', icon: '👥' },
-  { type: 'labor_force', label: 'Labor Force', icon: '🏭' },
-  { type: 'female_employment', label: 'Female Employment', icon: '👩‍💼' },
-  // Finance
-  { type: 'domestic_credit', label: 'Domestic Credit (% GDP)', icon: '🏦' },
-  // Development
-  { type: 'gini', label: 'GINI Index', icon: '⚖️' },
-  { type: 'life_expectancy', label: 'Life Expectancy', icon: '❤️' },
-  { type: 'education_spending', label: 'Education (% GDP)', icon: '🎓' },
-  { type: 'poverty_headcount', label: 'Poverty Rate', icon: '🏚️' },
-  // Energy
-  { type: 'co2_emissions', label: 'CO2 (tons/capita)', icon: '🏭' },
-  { type: 'renewable_energy', label: 'Renewable Energy', icon: '🌱' },
-  // Markets
-  { type: 'market_cap', label: 'Market Cap (% GDP)', icon: '📈' },
-  { type: 'stocks_traded', label: 'Stocks Traded (% GDP)', icon: '📊' },
-  { type: 'stock_turnover', label: 'Stock Turnover', icon: '🔄' },
-];
+// Get ordered list of indicators for display
+const ALL_INDICATORS = Object.values(INDICATOR_DEFINITIONS);
 
 export function CountryModal({ country, onClose }: CountryModalProps) {
   const [historyData, setHistoryData] = useState<HistoryResponse | null>(null);
@@ -126,14 +100,15 @@ export function CountryModal({ country, onClose }: CountryModalProps) {
         <div className={styles.indicatorToggles}>
           <span className={styles.toggleLabel}>Select indicators to display:</span>
           <div className={styles.toggleGroup}>
-            {ALL_INDICATORS.map(({ type, label, icon }) => (
+            {ALL_INDICATORS.map((indicator) => (
               <button
-                key={type}
-                className={`${styles.toggleButton} ${selectedIndicators.includes(type) ? styles.active : ''}`}
-                onClick={() => toggleIndicator(type)}
+                key={indicator.type}
+                className={`${styles.toggleButton} ${selectedIndicators.includes(indicator.type) ? styles.active : ''}`}
+                onClick={() => toggleIndicator(indicator.type)}
+                title={indicator.description}
               >
-                <span className={styles.toggleIcon}>{icon}</span>
-                <span className={styles.toggleText}>{label}</span>
+                <span className={styles.toggleIcon}>{indicator.icon}</span>
+                <span className={styles.toggleText}>{indicator.label}</span>
               </button>
             ))}
           </div>

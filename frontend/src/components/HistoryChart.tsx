@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { IndicatorType, HistoryDataPoint } from '../api/client';
+import { INDICATOR_DEFINITIONS } from '../data/indicators';
 import styles from './HistoryChart.module.css';
 
 interface HistoryChartProps {
@@ -48,36 +49,18 @@ const INDICATOR_COLORS: Record<IndicatorType, string> = {
   stock_turnover: '#ea580c',   // Orange-600
 };
 
-// Display names for indicators
-const INDICATOR_NAMES: Record<IndicatorType, string> = {
-  exchange: 'Exchange Rate',
-  inflation: 'Inflation %',
-  interest: 'Interest Rate %',
-  gdp_per_capita: 'GDP per Capita ($)',
-  unemployment: 'Unemployment %',
-  government_debt: 'Gov. Debt (% GDP)',
-  gini: 'GINI Index',
-  life_expectancy: 'Life Expectancy (years)',
-  // Trade
-  exports: 'Exports (% GDP)',
-  imports: 'Imports (% GDP)',
-  fdi_inflows: 'FDI Inflows (% GDP)',
-  // Labor
-  labor_force: 'Labor Force Participation %',
-  female_employment: 'Female Employment %',
-  // Finance
-  domestic_credit: 'Domestic Credit (% GDP)',
-  // Development
-  education_spending: 'Education Spending (% GDP)',
-  poverty_headcount: 'Poverty Rate %',
-  // Energy
-  co2_emissions: 'CO2 Emissions (tons/capita)',
-  renewable_energy: 'Renewable Energy %',
-  // Markets
-  market_cap: 'Market Cap (% GDP)',
-  stocks_traded: 'Stocks Traded (% GDP)',
-  stock_turnover: 'Stock Turnover %',
-};
+// Get display name for indicator (with unit)
+function getIndicatorName(type: IndicatorType): string {
+  const info = INDICATOR_DEFINITIONS[type];
+  if (info.unit === '% of GDP') {
+    return `${info.shortLabel} (% GDP)`;
+  } else if (info.unit === '%') {
+    return `${info.shortLabel} %`;
+  } else if (info.unit) {
+    return `${info.shortLabel} (${info.unit})`;
+  }
+  return info.shortLabel;
+}
 
 // Format value for tooltip
 function formatValue(value: number, indicator: IndicatorType): string {
@@ -116,7 +99,7 @@ function CustomTooltip({ active, payload, label }: {
             style={{ backgroundColor: entry.color }}
           />
           <span className={styles.tooltipLabel}>
-            {INDICATOR_NAMES[entry.dataKey as IndicatorType]}:
+            {getIndicatorName(entry.dataKey as IndicatorType)}:
           </span>
           <span className={styles.tooltipValue}>
             {formatValue(entry.value, entry.dataKey as IndicatorType)}
@@ -211,7 +194,7 @@ export function HistoryChart({ data, selectedIndicators }: HistoryChartProps) {
             wrapperStyle={{ paddingTop: '10px' }}
             formatter={(value) => (
               <span style={{ color: '#e5e7eb', fontSize: 12 }}>
-                {INDICATOR_NAMES[value as IndicatorType]}
+                {getIndicatorName(value as IndicatorType)}
               </span>
             )}
           />

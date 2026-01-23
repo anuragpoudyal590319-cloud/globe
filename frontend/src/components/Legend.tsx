@@ -1,5 +1,6 @@
 import { scaleSequential } from 'd3-scale';
 import { IndicatorType } from '../api/client';
+import { INDICATOR_DEFINITIONS } from '../data/indicators';
 import styles from './Legend.module.css';
 
 interface LegendProps {
@@ -9,59 +10,8 @@ interface LegendProps {
 }
 
 function getIndicatorInfo(type: IndicatorType): { label: string; unit: string } {
-  switch (type) {
-    // Economy
-    case 'exchange':
-      return { label: 'Exchange Rate', unit: 'per USD' };
-    case 'interest':
-      return { label: 'Real Interest Rate', unit: '%' };
-    case 'inflation':
-      return { label: 'Inflation Rate', unit: '%' };
-    case 'gdp_per_capita':
-      return { label: 'GDP per Capita', unit: 'USD' };
-    case 'unemployment':
-      return { label: 'Unemployment', unit: '%' };
-    case 'government_debt':
-      return { label: 'Gov. Debt', unit: '% of GDP' };
-    case 'gini':
-      return { label: 'GINI Index', unit: '0-100' };
-    case 'life_expectancy':
-      return { label: 'Life Expectancy', unit: 'years' };
-    // Trade
-    case 'exports':
-      return { label: 'Exports', unit: '% of GDP' };
-    case 'imports':
-      return { label: 'Imports', unit: '% of GDP' };
-    case 'fdi_inflows':
-      return { label: 'FDI Inflows', unit: '% of GDP' };
-    // Labor
-    case 'labor_force':
-      return { label: 'Labor Force Participation', unit: '%' };
-    case 'female_employment':
-      return { label: 'Female Employment', unit: '%' };
-    // Finance
-    case 'domestic_credit':
-      return { label: 'Domestic Credit', unit: '% of GDP' };
-    // Development
-    case 'education_spending':
-      return { label: 'Education Spending', unit: '% of GDP' };
-    case 'poverty_headcount':
-      return { label: 'Poverty Rate', unit: '%' };
-    // Energy
-    case 'co2_emissions':
-      return { label: 'CO2 Emissions', unit: 'tons/capita' };
-    case 'renewable_energy':
-      return { label: 'Renewable Energy', unit: '%' };
-    // Markets
-    case 'market_cap':
-      return { label: 'Market Capitalization', unit: '% of GDP' };
-    case 'stocks_traded':
-      return { label: 'Stocks Traded', unit: '% of GDP' };
-    case 'stock_turnover':
-      return { label: 'Stock Turnover Ratio', unit: '%' };
-    default:
-      return { label: 'Value', unit: '' };
-  }
+  const info = INDICATOR_DEFINITIONS[type];
+  return { label: info.label, unit: info.unit };
 }
 
 function formatValue(value: number, type: IndicatorType): string {

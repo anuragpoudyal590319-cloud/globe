@@ -1,4 +1,5 @@
 import { Country, IndicatorValue, IndicatorType } from '../api/client';
+import { INDICATOR_DEFINITIONS } from '../data/indicators';
 import styles from './Tooltip.module.css';
 
 interface TooltipProps {
@@ -45,59 +46,13 @@ function formatValue(value: number, type: IndicatorType): string {
 }
 
 function getIndicatorLabel(type: IndicatorType): string {
-  switch (type) {
-    // Economy
-    case 'exchange':
-      return 'Exchange Rate (vs USD)';
-    case 'interest':
-      return 'Real Interest Rate';
-    case 'inflation':
-      return 'Inflation Rate';
-    case 'gdp_per_capita':
-      return 'GDP per Capita';
-    case 'unemployment':
-      return 'Unemployment Rate';
-    case 'government_debt':
-      return 'Government Debt (% of GDP)';
-    case 'gini':
-      return 'GINI Index';
-    case 'life_expectancy':
-      return 'Life Expectancy';
-    // Trade
-    case 'exports':
-      return 'Exports (% of GDP)';
-    case 'imports':
-      return 'Imports (% of GDP)';
-    case 'fdi_inflows':
-      return 'FDI Inflows (% of GDP)';
-    // Labor
-    case 'labor_force':
-      return 'Labor Force Participation';
-    case 'female_employment':
-      return 'Female Employment';
-    // Finance
-    case 'domestic_credit':
-      return 'Domestic Credit (% of GDP)';
-    // Development
-    case 'education_spending':
-      return 'Education Spending (% of GDP)';
-    case 'poverty_headcount':
-      return 'Poverty Rate';
-    // Energy
-    case 'co2_emissions':
-      return 'CO2 Emissions (tons/capita)';
-    case 'renewable_energy':
-      return 'Renewable Energy';
-    // Markets
-    case 'market_cap':
-      return 'Market Capitalization (% of GDP)';
-    case 'stocks_traded':
-      return 'Stocks Traded (% of GDP)';
-    case 'stock_turnover':
-      return 'Stock Turnover Ratio';
-    default:
-      return 'Value';
+  const info = INDICATOR_DEFINITIONS[type];
+  if (info.unit === '% of GDP') {
+    return `${info.label} (% of GDP)`;
+  } else if (info.unit && info.unit !== '%') {
+    return `${info.label} (${info.unit})`;
   }
+  return info.label;
 }
 
 function formatDate(dateStr: string): string {
