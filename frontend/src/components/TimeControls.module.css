@@ -1,81 +1,13 @@
 .container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 12px 20px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  min-width: 320px;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.controlButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.controlButton:hover:not(:disabled) {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  border-color: var(--accent-cyan);
-}
-
-.controlButton:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.controlButton.active {
-  background: var(--accent-cyan);
-  color: var(--bg-primary);
-  border-color: var(--accent-cyan);
-}
-
-.playButton {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, var(--accent-cyan), #06b6d4);
-  color: var(--bg-primary);
-  border: none;
-  box-shadow: 0 2px 8px rgba(34, 211, 238, 0.3);
-}
-
-.playButton:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
-}
-
-.speedButton {
-  padding: 6px 12px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--accent-cyan);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.speedButton:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-cyan);
+  min-width: 300px;
 }
 
 .yearDisplay {
@@ -87,7 +19,7 @@
 
 .yearLabel {
   font-family: var(--font-mono);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--accent-cyan);
   letter-spacing: -0.02em;
@@ -107,6 +39,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .yearBound {
@@ -158,38 +91,14 @@
   cursor: not-allowed;
 }
 
-.progressBar {
-  height: 3px;
-  background: var(--bg-secondary);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-cyan), #06b6d4);
-  border-radius: 2px;
-  transition: width 0.1s linear;
-}
-
 /* Responsive */
 @media (max-width: 640px) {
   .container {
-    min-width: auto;
-    padding: 10px 12px;
+    min-width: 260px;
+    padding: 10px 14px;
   }
 
   .yearLabel {
-    font-size: 20px;
-  }
-
-  .controlButton {
-    width: 32px;
-    height: 32px;
-  }
-
-  .playButton {
-    width: 40px;
-    height: 40px;
+    font-size: 18px;
   }
 }
