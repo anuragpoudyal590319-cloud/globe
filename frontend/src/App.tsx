@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { api, Country, IndicatorValue, IndicatorType, MetaResponse, IndicatorYearRangeResponse } from './api/client';
 import { ChoroplethMap } from './components/ChoroplethMap';
 import { CountryModal } from './components/CountryModal';
@@ -33,7 +33,6 @@ export default function App() {
   // Time-lapse state
   const [currentYear, setCurrentYear] = useState<number | null>(null); // null = latest
   const [yearRange, setYearRange] = useState<IndicatorYearRangeResponse | null>(null);
-  const yearRef = useRef<number | null>(null); // For animation callback
 
   // Get indicators for the selected category
   const categoryIndicators = useMemo(() => 
@@ -64,11 +63,6 @@ export default function App() {
     }
     loadInitial();
   }, []);
-
-  // Keep yearRef in sync with currentYear for animation callback
-  useEffect(() => {
-    yearRef.current = currentYear;
-  }, [currentYear]);
 
   // Load year range when indicator type changes
   useEffect(() => {
@@ -106,13 +100,9 @@ export default function App() {
     loadIndicatorValues(indicatorType, currentYear);
   }, [indicatorType, currentYear, loadIndicatorValues]);
 
-  // Handle year change from TimeControls (supports callback for animation)
-  const handleYearChange = useCallback((yearOrCallback: number | null | ((prev: number | null) => number | null)) => {
-    if (typeof yearOrCallback === 'function') {
-      setCurrentYear(prev => yearOrCallback(prev));
-    } else {
-      setCurrentYear(yearOrCallback);
-    }
+  // Handle year change from TimeControls
+  const handleYearChange = useCallback((year: number | null) => {
+    setCurrentYear(year);
   }, []);
 
   const handleIndicatorChange = (type: IndicatorType) => {
@@ -211,7 +201,7 @@ export default function App() {
             <p>{error}</p>
             <button 
               className={styles.retryButton}
-              onClick={() => loadIndicatorValues(indicatorType)}
+              onClick={() => loadIndicatorValues(indicatorType, currentYear)}
             >
               Retry
             </button>

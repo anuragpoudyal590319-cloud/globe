@@ -33,9 +33,12 @@ export function TimeControls({
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState<PlaySpeed>('normal');
   const intervalRef = useRef<number | null>(null);
+  const currentYearRef = useRef(currentYear);
 
-  // The year shown on slider (use currentYear or maxYear if null)
-  const displayYear = currentYear ?? maxYear;
+  // Keep ref in sync
+  useEffect(() => {
+    currentYearRef.current = currentYear;
+  }, [currentYear]);
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -46,23 +49,25 @@ export function TimeControls({
     };
   }, []);
 
-  // Handle play/pause logic
+  // Handle animation
   useEffect(() => {
     if (isPlaying) {
       // Start from minYear if at latest or beyond maxYear
-      if (currentYear === null || currentYear >= maxYear) {
+      if (currentYearRef.current === null || currentYearRef.current >= maxYear) {
         onYearChange(minYear);
+        currentYearRef.current = minYear;
       }
 
       intervalRef.current = window.setInterval(() => {
-        onYearChange((prevYear) => {
-          const year = prevYear ?? minYear;
-          if (year >= maxYear) {
-            setIsPlaying(false);
-            return null; // Go back to "latest"
-          }
-          return year + 1;
-        });
+        const year = currentYearRef.current ?? minYear;
+        if (year >= maxYear) {
+          setIsPlaying(false);
+          onYearChange(null); // Go back to "latest"
+          return;
+        }
+        const nextYear = year + 1;
+        currentYearRef.current = nextYear;
+        onYearChange(nextYear);
       }, SPEED_INTERVALS[speed]);
     } else {
       if (intervalRef.current) {
@@ -74,9 +79,13 @@ export function TimeControls({
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [isPlaying, speed, minYear, maxYear, currentYear, onYearChange]);
+  }, [isPlaying, speed, minYear, maxYear, onYearChange]);
+
+  // The year shown on slider (use currentYear or maxYear if null)
+  const displayYear = currentYear ?? maxYear;
 
   const handlePlayPause = useCallback(() => {
     setIsPlaying((prev) => !prev);
