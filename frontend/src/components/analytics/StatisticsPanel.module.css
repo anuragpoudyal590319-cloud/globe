@@ -1,0 +1,304 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.select {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 0.875rem;
+  min-width: 180px;
+}
+
+.select:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 300px;
+  color: #9ca3af;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  font-family: var(--font-mono);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin: 0;
+}
+
+.sectionNote {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.percentiles {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.percentile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.percentileLabel {
+  font-size: 0.6875rem;
+  color: #6b7280;
+}
+
+.percentileValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  font-family: var(--font-mono);
+}
+
+.outliersList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.outlierItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.outlierItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.outlierItem.high {
+  border-left: 3px solid #10b981;
+}
+
+.outlierItem.low {
+  border-left: 3px solid #ef4444;
+}
+
+.outlierCountry {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.outlierValue {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-family: var(--font-mono);
+}
+
+.outlierZScore {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  font-family: var(--font-mono);
+}
+
+.rankingsTable {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.rankingsHeader {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px 80px;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+}
+
+.rankingsBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.rankingRow {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px 80px;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.rankingRow:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rankingRow.highlighted {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.rank {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.countryName {
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.zScore {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.zScore.positive {
+  color: #10b981;
+}
+
+.zScore.negative {
+  color: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+  }
+
+  .select {
+    min-width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rankingsHeader,
+  .rankingRow {
+    grid-template-columns: 40px 1fr 80px 60px;
+    font-size: 0.6875rem;
+  }
+}

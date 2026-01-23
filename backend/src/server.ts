@@ -10,6 +10,7 @@ import { metaRoutes } from './routes/meta.js';
 import { historyRoutes } from './routes/history.js';
 import { compareRoutes } from './routes/compare.js';
 import { adminRoutes } from './routes/admin.js';
+import { analyticsRoutes } from './routes/analytics.js';
 import { startScheduler } from './jobs/scheduler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +37,7 @@ async function start(): Promise<void> {
     await fastify.register(historyRoutes);
     await fastify.register(compareRoutes);
     await fastify.register(adminRoutes);
+    await fastify.register(analyticsRoutes);
 
     // Health check
     fastify.get('/api/health', async () => {

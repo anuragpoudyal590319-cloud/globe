@@ -1,0 +1,86 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.tooltip {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.75rem;
+  min-width: 120px;
+}
+
+.tooltipYear {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 0.5rem;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.tooltipRow span:last-child {
+  font-family: var(--font-mono);
+  color: #e5e7eb;
+}
+
+.tooltipChange {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tooltipChange.up {
+  color: #10b981;
+}
+
+.tooltipChange.down {
+  color: #ef4444;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.legendBox {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.description {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}

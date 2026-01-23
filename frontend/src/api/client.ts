@@ -114,6 +114,56 @@ export interface CompareCountryOption {
   dataPoints: number;
 }
 
+// Analytics types
+export interface BulkDataCountry {
+  code: string;
+  name: string;
+  region: string | null;
+  income_level: string | null;
+}
+
+export interface BulkDataResponse {
+  countries: BulkDataCountry[];
+  data: Record<string, Record<string, { year: number; value: number }[]>>;
+  yearRange: { min: number; max: number };
+}
+
+export interface CorrelationMatrix {
+  labels: string[];
+  matrix: number[][];
+}
+
+export interface CorrelationResponse {
+  type: 'cross_indicator' | 'cross_country';
+  correlation: CorrelationMatrix;
+  sampleSize: number;
+  yearRange: { from: number; to: number };
+}
+
+export interface StatisticsResponse {
+  indicator: string;
+  year: number;
+  count: number;
+  mean: number;
+  median: number;
+  stdDev: number;
+  min: number;
+  max: number;
+  percentiles: Record<string, number>;
+  quartiles: { q1: number; median: number; q3: number };
+  outliers: Array<{ country: string; value: number; zScore: number }>;
+  distribution: Array<{ bin: number; count: number; countries: string[] }>;
+}
+
+export interface RollingCorrelationResponse {
+  indicator1: string;
+  indicator2: string;
+  country: string | null;
+  windowSize: number;
+  years: number[];
+  correlations: number[];
+}
+
 const BASE_URL = '/api';
 
 async function fetchJson<T>(path: string): Promise<T> {
@@ -195,4 +245,56 @@ export const api = {
 
   getCompareCountries: () => 
     fetchJson<{ countries: CompareCountryOption[] }>('/compare/countries'),
+
+  // Analytics API
+  getAnalyticsBulk: (
+    indicators: IndicatorType[],
+    from?: number,
+    to?: number
+  ) => {
+    const params = new URLSearchParams();
+    params.set('indicators', indicators.join(','));
+    if (from) params.set('from', from.toString());
+    if (to) params.set('to', to.toString());
+    return fetchJson<BulkDataResponse>(`/analytics/bulk?${params.toString()}`);
+  },
+
+  getCorrelation: (options: {
+    type: 'cross_indicator' | 'cross_country';
+    indicators?: IndicatorType[];
+    indicator?: IndicatorType;
+    countries?: string[];
+    from?: number;
+    to?: number;
+  }) => {
+    const params = new URLSearchParams();
+    params.set('type', options.type);
+    if (options.indicators) params.set('indicators', options.indicators.join(','));
+    if (options.indicator) params.set('indicator', options.indicator);
+    if (options.countries) params.set('countries', options.countries.join(','));
+    if (options.from) params.set('from', options.from.toString());
+    if (options.to) params.set('to', options.to.toString());
+    return fetchJson<CorrelationResponse>(`/analytics/correlation?${params.toString()}`);
+  },
+
+  getStatistics: (indicator: IndicatorType, year?: number) => {
+    const params = new URLSearchParams();
+    params.set('indicator', indicator);
+    if (year) params.set('year', year.toString());
+    return fetchJson<StatisticsResponse>(`/analytics/statistics?${params.toString()}`);
+  },
+
+  getRollingCorrelation: (
+    indicator1: IndicatorType,
+    indicator2: IndicatorType,
+    windowSize?: number,
+    country?: string
+  ) => {
+    const params = new URLSearchParams();
+    params.set('indicator1', indicator1);
+    params.set('indicator2', indicator2);
+    if (windowSize) params.set('window', windowSize.toString());
+    if (country) params.set('country', country);
+    return fetchJson<RollingCorrelationResponse>(`/analytics/rolling-correlation?${params.toString()}`);
+  },
 };
