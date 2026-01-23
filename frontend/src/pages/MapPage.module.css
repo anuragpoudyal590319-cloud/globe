@@ -7,24 +7,24 @@
 
 .controls {
   flex-shrink: 0;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
 }
 
 .controlsTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .compareButton {
-  padding: 0.5rem 1rem;
+  padding: 0.375rem 0.75rem;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -57,21 +57,21 @@
   gap: 0.25rem;
   padding: 0.25rem;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
   overflow-x: auto;
 }
 
 .categoryTab {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   color: #9ca3af;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -89,31 +89,31 @@
 }
 
 .categoryIcon {
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .categoryLabel {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
 }
 
 /* Indicator Navigation */
 .indicatorNav {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.375rem;
   flex-wrap: wrap;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .indicatorButton {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 5px;
   color: #9ca3af;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -132,7 +132,7 @@
 }
 
 .indicatorIcon {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .indicatorLabel {
@@ -143,25 +143,25 @@
 .currentSelection {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
   background: rgba(16, 185, 129, 0.08);
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.375rem;
 }
 
 .currentIcon {
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 .currentLabel {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #10b981;
 }
 
 .currentDescription {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: #9ca3af;
   margin-left: auto;
   max-width: 50%;
@@ -211,7 +211,7 @@
 /* Time Controls */
 .timeControlsWrapper {
   flex-shrink: 0;
-  padding: 0.5rem 1.5rem;
+  padding: 0.375rem 1rem;
 }
 
 /* Footer */
@@ -221,8 +221,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.5rem;
+  font-size: 0.6875rem;
   color: #6b7280;
   background: rgba(0, 0, 0, 0.2);
 }

@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 8px 16px;
 }
 
 .brand {
@@ -29,8 +29,8 @@
 }
 
 .logo {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   animation: float 6s ease-in-out infinite;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -57,13 +57,13 @@
 .navLink {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: 6px;
+  padding: 6px 14px;
   background: transparent;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 6px;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -84,7 +84,7 @@
 }
 
 .navIcon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .navLabel {
