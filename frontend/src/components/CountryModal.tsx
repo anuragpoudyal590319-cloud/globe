@@ -13,28 +13,28 @@ const ALL_INDICATORS: { type: IndicatorType; label: string; icon: string }[] = [
   { type: 'gdp_per_capita', label: 'GDP per Capita', icon: '💰' },
   { type: 'inflation', label: 'Inflation', icon: '📊' },
   { type: 'interest', label: 'Interest Rate', icon: '📈' },
-  { type: 'government_debt', label: 'Gov. Debt', icon: '🏛️' },
+  { type: 'government_debt', label: 'Gov. Debt (% GDP)', icon: '🏛️' },
   // Trade
-  { type: 'exports', label: 'Exports', icon: '📦' },
-  { type: 'imports', label: 'Imports', icon: '🚢' },
-  { type: 'fdi_inflows', label: 'FDI Inflows', icon: '💼' },
+  { type: 'exports', label: 'Exports (% GDP)', icon: '📦' },
+  { type: 'imports', label: 'Imports (% GDP)', icon: '🚢' },
+  { type: 'fdi_inflows', label: 'FDI Inflows (% GDP)', icon: '💼' },
   // Labor
   { type: 'unemployment', label: 'Unemployment', icon: '👥' },
   { type: 'labor_force', label: 'Labor Force', icon: '🏭' },
   { type: 'female_employment', label: 'Female Employment', icon: '👩‍💼' },
   // Finance
-  { type: 'domestic_credit', label: 'Domestic Credit', icon: '🏦' },
+  { type: 'domestic_credit', label: 'Domestic Credit (% GDP)', icon: '🏦' },
   // Development
   { type: 'gini', label: 'GINI Index', icon: '⚖️' },
   { type: 'life_expectancy', label: 'Life Expectancy', icon: '❤️' },
-  { type: 'education_spending', label: 'Education Spending', icon: '🎓' },
+  { type: 'education_spending', label: 'Education (% GDP)', icon: '🎓' },
   { type: 'poverty_headcount', label: 'Poverty Rate', icon: '🏚️' },
   // Energy
-  { type: 'co2_emissions', label: 'CO2 Emissions', icon: '🏭' },
+  { type: 'co2_emissions', label: 'CO2 (tons/capita)', icon: '🏭' },
   { type: 'renewable_energy', label: 'Renewable Energy', icon: '🌱' },
   // Markets
-  { type: 'market_cap', label: 'Market Cap', icon: '📈' },
-  { type: 'stocks_traded', label: 'Stocks Traded', icon: '📊' },
+  { type: 'market_cap', label: 'Market Cap (% GDP)', icon: '📈' },
+  { type: 'stocks_traded', label: 'Stocks Traded (% GDP)', icon: '📊' },
   { type: 'stock_turnover', label: 'Stock Turnover', icon: '🔄' },
 ];
 

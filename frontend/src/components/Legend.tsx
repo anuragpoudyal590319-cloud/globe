@@ -10,6 +10,7 @@ interface LegendProps {
 
 function getIndicatorInfo(type: IndicatorType): { label: string; unit: string } {
   switch (type) {
+    // Economy
     case 'exchange':
       return { label: 'Exchange Rate', unit: 'per USD' };
     case 'interest':
@@ -21,11 +22,43 @@ function getIndicatorInfo(type: IndicatorType): { label: string; unit: string } 
     case 'unemployment':
       return { label: 'Unemployment', unit: '%' };
     case 'government_debt':
-      return { label: 'Gov. Debt', unit: '% GDP' };
+      return { label: 'Gov. Debt', unit: '% of GDP' };
     case 'gini':
       return { label: 'GINI Index', unit: '0-100' };
     case 'life_expectancy':
       return { label: 'Life Expectancy', unit: 'years' };
+    // Trade
+    case 'exports':
+      return { label: 'Exports', unit: '% of GDP' };
+    case 'imports':
+      return { label: 'Imports', unit: '% of GDP' };
+    case 'fdi_inflows':
+      return { label: 'FDI Inflows', unit: '% of GDP' };
+    // Labor
+    case 'labor_force':
+      return { label: 'Labor Force Participation', unit: '%' };
+    case 'female_employment':
+      return { label: 'Female Employment', unit: '%' };
+    // Finance
+    case 'domestic_credit':
+      return { label: 'Domestic Credit', unit: '% of GDP' };
+    // Development
+    case 'education_spending':
+      return { label: 'Education Spending', unit: '% of GDP' };
+    case 'poverty_headcount':
+      return { label: 'Poverty Rate', unit: '%' };
+    // Energy
+    case 'co2_emissions':
+      return { label: 'CO2 Emissions', unit: 'tons/capita' };
+    case 'renewable_energy':
+      return { label: 'Renewable Energy', unit: '%' };
+    // Markets
+    case 'market_cap':
+      return { label: 'Market Capitalization', unit: '% of GDP' };
+    case 'stocks_traded':
+      return { label: 'Stocks Traded', unit: '% of GDP' };
+    case 'stock_turnover':
+      return { label: 'Stock Turnover Ratio', unit: '%' };
     default:
       return { label: 'Value', unit: '' };
   }
@@ -41,9 +74,28 @@ function formatValue(value: number, type: IndicatorType): string {
       if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
       return value.toFixed(0);
     case 'life_expectancy':
-      return value.toFixed(0);
     case 'gini':
       return value.toFixed(0);
+    case 'co2_emissions':
+      return value.toFixed(1);
+    // All percentage-based indicators
+    case 'inflation':
+    case 'interest':
+    case 'unemployment':
+    case 'government_debt':
+    case 'exports':
+    case 'imports':
+    case 'fdi_inflows':
+    case 'labor_force':
+    case 'female_employment':
+    case 'domestic_credit':
+    case 'education_spending':
+    case 'poverty_headcount':
+    case 'renewable_energy':
+    case 'market_cap':
+    case 'stocks_traded':
+    case 'stock_turnover':
+      return value.toFixed(1);
     default:
       return value.toFixed(1);
   }
