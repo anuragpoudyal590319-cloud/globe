@@ -280,6 +280,27 @@
   box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
 }
 
+/* Time Controls */
+.timeControlsWrapper {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Footer */
 .footer {
   display: flex;

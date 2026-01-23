@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { api, Country, IndicatorValue, IndicatorType, MetaResponse } from './api/client';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { api, Country, IndicatorValue, IndicatorType, MetaResponse, IndicatorYearRangeResponse } from './api/client';
 import { ChoroplethMap } from './components/ChoroplethMap';
 import { CountryModal } from './components/CountryModal';
 import { ComparisonModal } from './components/ComparisonModal';
+import { TimeControls } from './components/TimeControls';
 import { CATEGORIES, INDICATOR_DEFINITIONS, CategoryId, getIndicatorsByCategory } from './data/indicators';
 import styles from './App.module.css';
 
@@ -28,6 +29,11 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+  
+  // Time-lapse state
+  const [currentYear, setCurrentYear] = useState<number | null>(null); // null = latest
+  const [yearRange, setYearRange] = useState<IndicatorYearRangeResponse | null>(null);
+  const yearRef = useRef<number | null>(null); // For animation callback
 
   // Get indicators for the selected category
   const categoryIndicators = useMemo(() => 
@@ -59,12 +65,33 @@ export default function App() {
     loadInitial();
   }, []);
 
-  // Load indicator values when type changes
-  const loadIndicatorValues = useCallback(async (type: IndicatorType) => {
+  // Keep yearRef in sync with currentYear for animation callback
+  useEffect(() => {
+    yearRef.current = currentYear;
+  }, [currentYear]);
+
+  // Load year range when indicator type changes
+  useEffect(() => {
+    async function loadYearRange() {
+      try {
+        const range = await api.getIndicatorYearRange(indicatorType);
+        setYearRange(range);
+      } catch (err) {
+        console.error('Failed to load year range:', err);
+        setYearRange({ indicator_type: indicatorType, min_year: 1960, max_year: 2024, total_records: 0 });
+      }
+    }
+    loadYearRange();
+  }, [indicatorType]);
+
+  // Load indicator values when type or year changes
+  const loadIndicatorValues = useCallback(async (type: IndicatorType, year: number | null) => {
     setIsLoading(true);
     setError(null);
     try {
-      const values = await api.getLatestIndicators(type);
+      const values = year === null 
+        ? await api.getLatestIndicators(type)
+        : await api.getIndicatorsByYear(type, year);
       setIndicatorValues(values);
     } catch (err) {
       console.error('Failed to load indicator values:', err);
@@ -76,12 +103,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    loadIndicatorValues(indicatorType);
-  }, [indicatorType, loadIndicatorValues]);
+    loadIndicatorValues(indicatorType, currentYear);
+  }, [indicatorType, currentYear, loadIndicatorValues]);
+
+  // Handle year change from TimeControls (supports callback for animation)
+  const handleYearChange = useCallback((yearOrCallback: number | null | ((prev: number | null) => number | null)) => {
+    if (typeof yearOrCallback === 'function') {
+      setCurrentYear(prev => yearOrCallback(prev));
+    } else {
+      setCurrentYear(yearOrCallback);
+    }
+  }, []);
 
   const handleIndicatorChange = (type: IndicatorType) => {
     if (type !== indicatorType) {
       setIndicatorType(type);
+      setCurrentYear(null); // Reset to latest when changing indicators
     }
   };
 
@@ -190,12 +227,27 @@ export default function App() {
         )}
       </main>
 
+      {/* Time Controls */}
+      {yearRange && yearRange.total_records > 0 && (
+        <div className={styles.timeControlsWrapper}>
+          <TimeControls
+            minYear={yearRange.min_year}
+            maxYear={yearRange.max_year}
+            currentYear={currentYear}
+            onYearChange={handleYearChange}
+            isLoading={isLoading}
+          />
+        </div>
+      )}
+
       <footer className={styles.footer}>
         <span>Data: World Bank, Open Exchange Rates</span>
         <span className={styles.separator}>•</span>
         <span>{indicatorValues.length} countries</span>
         <span className={styles.separator}>•</span>
-        <span className={styles.hint}>Click a country for historical data</span>
+        <span className={styles.hint}>
+          {currentYear ? `Showing ${currentYear} data` : 'Click a country for historical data'}
+        </span>
       </footer>
 
       {selectedCountry && (

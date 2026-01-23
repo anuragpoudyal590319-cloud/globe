@@ -75,6 +75,13 @@ export interface YearRangeResponse {
   data_points: number;
 }
 
+export interface IndicatorYearRangeResponse {
+  indicator_type: string;
+  min_year: number;
+  max_year: number;
+  total_records: number;
+}
+
 export interface CompareCountryInfo {
   code: string;
   name: string;
@@ -122,6 +129,14 @@ export const api = {
   
   getLatestIndicators: (type: IndicatorType) => 
     fetchJson<IndicatorValue[]>(`/indicators/latest?type=${type}`),
+
+  // Get indicator values for a specific year (for time-lapse animation)
+  getIndicatorsByYear: (type: IndicatorType, year: number) =>
+    fetchJson<IndicatorValue[]>(`/indicators/year?type=${type}&year=${year}`),
+
+  // Get available year range for an indicator
+  getIndicatorYearRange: (type: IndicatorType) =>
+    fetchJson<IndicatorYearRangeResponse>(`/indicators/years?type=${type}`),
   
   getMeta: () => fetchJson<MetaResponse>('/meta/last-updated'),
 
