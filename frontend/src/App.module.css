@@ -208,11 +208,9 @@
 .currentDescription {
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.4;
-  max-width: 600px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Meta info */
@@ -329,8 +327,13 @@
 }
 
 @media (max-width: 900px) {
+  .currentSelection {
+    flex-wrap: wrap;
+  }
+  
   .currentDescription {
-    max-width: 400px;
+    flex-basis: 100%;
+    margin-top: 4px;
   }
 }
 
