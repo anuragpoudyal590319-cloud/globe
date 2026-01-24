@@ -234,7 +234,7 @@ export function CorrelationPanel() {
               : 'Select Countries (min 2):'}
           </label>
           <div className={styles.chips}>
-            {availableCountries.slice(0, 30).map((country) => (
+            {availableCountries.map((country) => (
               <button
                 key={country.code}
                 className={`${styles.chip} ${selectedCountries.includes(country.code) ? styles.chipActive : ''}`}

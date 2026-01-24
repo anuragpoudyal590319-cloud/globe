@@ -331,7 +331,7 @@ export function AdvancedChartsPanel() {
             <div className={styles.countrySelection}>
               <label>Countries (max 5):</label>
               <div className={styles.chips}>
-                {availableCountries.slice(0, 40).map((country) => (
+                {availableCountries.map((country) => (
                   <button
                     key={country.code}
                     className={`${styles.chip} ${radarCountries.includes(country.code) ? styles.chipActive : ''}`}
@@ -412,7 +412,7 @@ export function AdvancedChartsPanel() {
               <div className={styles.countrySelection}>
                 <label>Countries (max 7):</label>
                 <div className={styles.chips}>
-                  {availableCountries.slice(0, 40).map((country) => (
+                  {availableCountries.map((country) => (
                     <button
                       key={country.code}
                       className={`${styles.chip} ${stackedCountries.includes(country.code) ? styles.chipActive : ''}`}
