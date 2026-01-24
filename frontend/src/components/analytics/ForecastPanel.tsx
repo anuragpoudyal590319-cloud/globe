@@ -40,6 +40,7 @@ export function ForecastPanel() {
   const [availableCountries, setAvailableCountries] = useState<CountryOption[]>([]);
   const [historyData, setHistoryData] = useState<Point[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Overlay toggles
   const [showTrend, setShowTrend] = useState(true);
@@ -63,12 +64,19 @@ export function ForecastPanel() {
   useEffect(() => {
     const fetchHistory = async () => {
       setIsLoading(true);
+      setError(null);
       try {
         const response = await api.getCountryHistory(selectedCountry, [selectedIndicator]);
         const data = response.data[selectedIndicator] || [];
-        setHistoryData(data.map((d) => ({ year: d.year, value: d.value })));
+        if (data.length === 0) {
+          setError('No historical data available for this country and indicator combination.');
+        } else {
+          setHistoryData(data.map((d) => ({ year: d.year, value: d.value })));
+        }
       } catch (err) {
         console.error('Failed to fetch history:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load historical data';
+        setError(errorMessage);
         setHistoryData([]);
       } finally {
         setIsLoading(false);
@@ -278,6 +286,8 @@ export function ForecastPanel() {
             <div className={styles.spinner} />
             <span>Loading data...</span>
           </div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
         ) : chartData.length === 0 ? (
           <div className={styles.empty}>No data available</div>
         ) : (

@@ -316,7 +316,7 @@ export async function analyticsRoutes(fastify: FastifyInstance): Promise<void> {
 
         if (commonCountries.length < 3) {
           return reply.status(400).send({
-            error: 'Not enough countries with data for all indicators (need at least 3)',
+            error: `Not enough countries with data for all selected indicators. Found ${commonCountries.length} countries with complete data, but need at least 3. Try selecting different indicators or more countries.`,
           });
         }
 
@@ -425,7 +425,7 @@ export async function analyticsRoutes(fastify: FastifyInstance): Promise<void> {
 
         if (commonYears.length < 5) {
           return reply.status(400).send({
-            error: 'Not enough common years with data for all countries (need at least 5)',
+            error: `Not enough common years with data for all selected countries. Found ${commonYears.length} years with complete data, but need at least 5. Try selecting different countries or adjusting the year range.`,
           });
         }
 
@@ -523,7 +523,7 @@ export async function analyticsRoutes(fastify: FastifyInstance): Promise<void> {
 
       if (result.rows.length < 3) {
         return reply.status(400).send({
-          error: `Not enough data for ${indicator} in ${targetYear} (found ${result.rows.length} countries)`,
+          error: `Not enough data for ${indicator} in ${targetYear}. Found data for ${result.rows.length} countries, but need at least 3. Try selecting a different year or indicator.`,
         });
       }
 
@@ -654,11 +654,11 @@ export async function analyticsRoutes(fastify: FastifyInstance): Promise<void> {
         .filter(year => data2.has(year))
         .sort((a, b) => a - b);
 
-      if (years.length < windowSize + 1) {
-        return reply.status(400).send({
-          error: `Not enough common years for rolling correlation (need ${windowSize + 1}, have ${years.length})`,
-        });
-      }
+        if (years.length < windowSize + 1) {
+          return reply.status(400).send({
+            error: `Not enough common years for rolling correlation. Found ${years.length} years with data for both indicators, but need at least ${windowSize + 1} (window size: ${windowSize}). Try reducing the window size or selecting different indicators.`,
+          });
+        }
 
       // Calculate rolling correlations
       const rollingYears: number[] = [];

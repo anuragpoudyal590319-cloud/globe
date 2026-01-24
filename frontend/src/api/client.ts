@@ -169,7 +169,19 @@ const BASE_URL = '/api';
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE_URL}${path}`);
   if (!response.ok) {
-    throw new Error(`API error: ${response.status} ${response.statusText}`);
+    // Try to extract error message from response body
+    let errorMessage = `API error: ${response.status} ${response.statusText}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.error) {
+        errorMessage = errorData.error;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // If response is not JSON, use default error message
+    }
+    throw new Error(errorMessage);
   }
   return response.json();
 }

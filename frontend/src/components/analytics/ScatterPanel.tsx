@@ -45,6 +45,8 @@ export function ScatterPanel() {
         indicators.push(zIndicator);
       }
 
+      // Validation is handled by the UI (X and Y are always selected)
+
       try {
         const data = await api.getAnalyticsBulk(indicators, selectedYear, selectedYear);
         setBulkData(data);

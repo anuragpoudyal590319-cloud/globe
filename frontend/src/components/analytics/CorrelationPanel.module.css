@@ -76,6 +76,13 @@
   color: #9ca3af;
 }
 
+.hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0.25rem 0;
+  font-style: italic;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;

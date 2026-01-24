@@ -59,16 +59,28 @@ export function CorrelationPanel() {
 
   // Fetch correlation data
   const fetchCorrelation = useCallback(async () => {
+    // Validate inputs before making API call
+    if (correlationType === 'cross_indicator') {
+      if (selectedIndicators.length < 2) {
+        setError('Select at least 2 indicators');
+        setCorrelationData(null);
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      if (selectedCountries.length < 2) {
+        setError('Select at least 2 countries');
+        setCorrelationData(null);
+        setIsLoading(false);
+        return;
+      }
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
       if (correlationType === 'cross_indicator') {
-        if (selectedIndicators.length < 2) {
-          setError('Select at least 2 indicators');
-          setCorrelationData(null);
-          return;
-        }
         const data = await api.getCorrelation({
           type: 'cross_indicator',
           indicators: selectedIndicators,
@@ -78,11 +90,6 @@ export function CorrelationPanel() {
         });
         setCorrelationData(data);
       } else {
-        if (selectedCountries.length < 2) {
-          setError('Select at least 2 countries');
-          setCorrelationData(null);
-          return;
-        }
         const data = await api.getCorrelation({
           type: 'cross_country',
           indicator: singleIndicator,
@@ -94,7 +101,8 @@ export function CorrelationPanel() {
       }
     } catch (err) {
       console.error('Failed to fetch correlation:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch correlation data');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch correlation data';
+      setError(errorMessage);
       setCorrelationData(null);
     } finally {
       setIsLoading(false);
@@ -233,6 +241,11 @@ export function CorrelationPanel() {
               ? 'Filter by Countries (optional):'
               : 'Select Countries (min 2):'}
           </label>
+          {correlationType === 'cross_country' && (
+            <p className={styles.hint}>
+              Tip: Select countries that have data for the chosen indicator in the selected year range. More countries with complete data will give better correlation results.
+            </p>
+          )}
           <div className={styles.chips}>
             {availableCountries.map((country) => (
               <button

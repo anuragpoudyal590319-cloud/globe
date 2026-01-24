@@ -76,6 +76,11 @@ export function AdvancedChartsPanel() {
         let to: number;
 
         if (chartType === 'radar') {
+          if (radarCountries.length === 0) {
+            setError('Please select at least one country for the radar chart');
+            setIsLoading(false);
+            return;
+          }
           indicators = RADAR_INDICATORS;
           from = radarYear;
           to = radarYear;
@@ -84,6 +89,11 @@ export function AdvancedChartsPanel() {
           from = 1990;
           to = 2023;
         } else {
+          if (stackedMode === 'countries' && stackedCountries.length === 0) {
+            setError('Please select at least one country for the stacked area chart');
+            setIsLoading(false);
+            return;
+          }
           indicators = [stackedIndicator];
           from = 1990;
           to = 2023;
@@ -101,7 +111,7 @@ export function AdvancedChartsPanel() {
     };
 
     fetchData();
-  }, [chartType, radarYear, candlestickIndicator, stackedIndicator]);
+  }, [chartType, radarYear, radarCountries, candlestickIndicator, stackedIndicator, stackedMode, stackedCountries]);
 
   // Process radar data
   const radarData = useMemo(() => {

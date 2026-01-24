@@ -53,6 +53,19 @@ export function HeatmapPanel() {
       const from = viewMode === 'time-country' ? fromYear : selectedYear;
       const to = viewMode === 'time-country' ? toYear : selectedYear;
 
+      // Validate inputs
+      if (viewMode === 'country-indicator' && selectedIndicators.length === 0) {
+        setError('Please select at least one indicator');
+        setIsLoading(false);
+        return;
+      }
+
+      if (from > to) {
+        setError('Start year must be less than or equal to end year');
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const data = await api.getAnalyticsBulk(indicators, from, to);
         setBulkData(data);
