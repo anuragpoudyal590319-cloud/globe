@@ -427,12 +427,12 @@ export function ChoroplethMap({
         <ComposableMap
           projection="geoMercator"
           projectionConfig={{
-            scale: 130,
-            center: [10, 20],
+            scale: 100,
+            center: [0, 20],
           }}
           style={{ width: '100%', height: '100%' }}
         >
-          <ZoomableGroup>
+          <ZoomableGroup center={[0, 20]} zoom={1} minZoom={1} maxZoom={8}>
             <Geographies geography={GEO_URL}>
               {({ geographies }) =>
                 geographies.map((geo) => (

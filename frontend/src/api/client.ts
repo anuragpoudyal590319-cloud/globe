@@ -169,7 +169,6 @@ const BASE_URL = '/api';
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE_URL}${path}`);
   if (!response.ok) {
-    // Try to extract error message from response body
     let errorMessage = `API error: ${response.status} ${response.statusText}`;
     try {
       const errorData = await response.json();
@@ -179,7 +178,7 @@ async function fetchJson<T>(path: string): Promise<T> {
         errorMessage = errorData.message;
       }
     } catch {
-      // If response is not JSON, use default error message
+      // response body was not JSON
     }
     throw new Error(errorMessage);
   }
@@ -266,8 +265,8 @@ export const api = {
   ) => {
     const params = new URLSearchParams();
     params.set('indicators', indicators.join(','));
-    if (from) params.set('from', from.toString());
-    if (to) params.set('to', to.toString());
+    if (from != null) params.set('from', from.toString());
+    if (to != null) params.set('to', to.toString());
     return fetchJson<BulkDataResponse>(`/analytics/bulk?${params.toString()}`);
   },
 
@@ -284,8 +283,8 @@ export const api = {
     if (options.indicators) params.set('indicators', options.indicators.join(','));
     if (options.indicator) params.set('indicator', options.indicator);
     if (options.countries) params.set('countries', options.countries.join(','));
-    if (options.from) params.set('from', options.from.toString());
-    if (options.to) params.set('to', options.to.toString());
+    if (options.from != null) params.set('from', options.from.toString());
+    if (options.to != null) params.set('to', options.to.toString());
     return fetchJson<CorrelationResponse>(`/analytics/correlation?${params.toString()}`);
   },
 

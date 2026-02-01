@@ -28,8 +28,9 @@ export function StatisticsPanel() {
         const data = await api.getStatistics(selectedIndicator, selectedYear);
         setStatistics(data);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to load statistics';
         console.error('Failed to fetch statistics:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load statistics');
+        setError(msg);
         setStatistics(null);
       } finally {
         setIsLoading(false);

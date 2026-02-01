@@ -70,8 +70,9 @@ export function HeatmapPanel() {
         const data = await api.getAnalyticsBulk(indicators, from, to);
         setBulkData(data);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to load data';
         console.error('Failed to fetch bulk data:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load data');
+        setError(msg);
         setBulkData(null);
       } finally {
         setIsLoading(false);

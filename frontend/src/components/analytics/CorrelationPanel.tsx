@@ -20,6 +20,8 @@ const INDICATOR_OPTIONS: { type: IndicatorType; label: string }[] = Object.entri
   ([type, info]) => ({ type: type as IndicatorType, label: info.shortLabel })
 );
 
+const YEAR_OPTIONS = Array.from({ length: 55 }, (_, i) => 1970 + i); // 1970–2024
+
 interface CountryOption {
   code: string;
   name: string;
@@ -100,8 +102,8 @@ export function CorrelationPanel() {
         setCorrelationData(data);
       }
     } catch (err) {
-      console.error('Failed to fetch correlation:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch correlation data';
+      console.error('Failed to fetch correlation:', err);
       setError(errorMessage);
       setCorrelationData(null);
     } finally {
@@ -134,18 +136,6 @@ export function CorrelationPanel() {
     fetchRollingCorrelation();
   }, [fetchRollingCorrelation]);
 
-  const toggleIndicator = (type: IndicatorType) => {
-    setSelectedIndicators((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  };
-
-  const toggleCountry = (code: string) => {
-    setSelectedCountries((prev) =>
-      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
-    );
-  };
-
   // Get display labels for the heatmap
   const getLabels = (): string[] => {
     if (!correlationData) return [];
@@ -177,42 +167,57 @@ export function CorrelationPanel() {
         </div>
 
         {/* Year Range */}
-        <div className={styles.yearRange}>
-          <label>Year Range:</label>
-          <input
-            type="number"
-            value={fromYear}
-            onChange={(e) => setFromYear(parseInt(e.target.value, 10))}
-            min={1960}
-            max={2024}
-            className={styles.yearInput}
-          />
-          <span>to</span>
-          <input
-            type="number"
-            value={toYear}
-            onChange={(e) => setToYear(parseInt(e.target.value, 10))}
-            min={1960}
-            max={2024}
-            className={styles.yearInput}
-          />
+        <div className={styles.yearRow}>
+          <div className={styles.field}>
+            <label>From Year:</label>
+            <select
+              value={fromYear}
+              onChange={(e) => setFromYear(parseInt(e.target.value, 10))}
+              className={styles.select}
+            >
+              {YEAR_OPTIONS.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.field}>
+            <label>To Year:</label>
+            <select
+              value={toYear}
+              onChange={(e) => setToYear(parseInt(e.target.value, 10))}
+              className={styles.select}
+            >
+              {YEAR_OPTIONS.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Indicator Selection (for cross-indicator) */}
         {correlationType === 'cross_indicator' && (
           <div className={styles.selection}>
-            <label>Select Indicators (min 2):</label>
-            <div className={styles.chips}>
+            <label>Select Indicators (min 2, hold Ctrl/Cmd to select multiple):</label>
+            <select
+              multiple
+              value={selectedIndicators}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions, (opt) => opt.value as IndicatorType);
+                setSelectedIndicators(selected);
+              }}
+              className={styles.selectMulti}
+              size={8}
+            >
               {INDICATOR_OPTIONS.map(({ type, label }) => (
-                <button
-                  key={type}
-                  className={`${styles.chip} ${selectedIndicators.includes(type) ? styles.chipActive : ''}`}
-                  onClick={() => toggleIndicator(type)}
-                >
+                <option key={type} value={type}>
                   {label}
-                </button>
+                </option>
               ))}
-            </div>
+            </select>
           </div>
         )}
 
@@ -238,25 +243,30 @@ export function CorrelationPanel() {
         <div className={styles.selection}>
           <label>
             {correlationType === 'cross_indicator'
-              ? 'Filter by Countries (optional):'
-              : 'Select Countries (min 2):'}
+              ? 'Filter by Countries (optional, hold Ctrl/Cmd to select multiple):'
+              : 'Select Countries (min 2, hold Ctrl/Cmd to select multiple):'}
           </label>
           {correlationType === 'cross_country' && (
             <p className={styles.hint}>
-              Tip: Select countries that have data for the chosen indicator in the selected year range. More countries with complete data will give better correlation results.
+              Tip: Select countries that have data for the chosen indicator in the selected year range.
             </p>
           )}
-          <div className={styles.chips}>
+          <select
+            multiple
+            value={selectedCountries}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, (opt) => opt.value);
+              setSelectedCountries(selected);
+            }}
+            className={styles.selectMulti}
+            size={8}
+          >
             {availableCountries.map((country) => (
-              <button
-                key={country.code}
-                className={`${styles.chip} ${selectedCountries.includes(country.code) ? styles.chipActive : ''}`}
-                onClick={() => toggleCountry(country.code)}
-              >
-                {country.code}
-              </button>
+              <option key={country.code} value={country.code}>
+                {country.name} ({country.code})
+              </option>
             ))}
-          </div>
+          </select>
         </div>
       </div>
 

@@ -12,6 +12,8 @@ const INDICATOR_OPTIONS: { type: IndicatorType; label: string }[] = Object.entri
   ([type, info]) => ({ type: type as IndicatorType, label: info.shortLabel })
 );
 
+const YEAR_OPTIONS = Array.from({ length: 34 }, (_, i) => 1990 + i); // 1990–2023
+
 interface CountryOption {
   code: string;
   name: string;
@@ -102,8 +104,9 @@ export function AdvancedChartsPanel() {
         const data = await api.getAnalyticsBulk(indicators, from, to);
         setBulkData(data);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to load data';
         console.error('Failed to fetch data:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load data');
+        setError(msg);
         setBulkData(null);
       } finally {
         setIsLoading(false);
@@ -272,30 +275,6 @@ export function AdvancedChartsPanel() {
     }
   }, [bulkData, chartType, stackedMode, stackedIndicator, stackedCountries, availableCountries]);
 
-  const toggleRadarCountry = (code: string) => {
-    setRadarCountries((prev) => {
-      if (prev.includes(code)) {
-        return prev.filter((c) => c !== code);
-      }
-      if (prev.length < 5) {
-        return [...prev, code];
-      }
-      return prev;
-    });
-  };
-
-  const toggleStackedCountry = (code: string) => {
-    setStackedCountries((prev) => {
-      if (prev.includes(code)) {
-        return prev.filter((c) => c !== code);
-      }
-      if (prev.length < 7) {
-        return [...prev, code];
-      }
-      return prev;
-    });
-  };
-
   return (
     <div className={styles.panel}>
       {/* Chart Type Selector */}
@@ -329,28 +308,36 @@ export function AdvancedChartsPanel() {
           <>
             <div className={styles.field}>
               <label>Year:</label>
-              <input
-                type="number"
+              <select
                 value={radarYear}
                 onChange={(e) => setRadarYear(parseInt(e.target.value, 10))}
-                min={1990}
-                max={2023}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.countrySelection}>
-              <label>Countries (max 5):</label>
-              <div className={styles.chips}>
-                {availableCountries.map((country) => (
-                  <button
-                    key={country.code}
-                    className={`${styles.chip} ${radarCountries.includes(country.code) ? styles.chipActive : ''}`}
-                    onClick={() => toggleRadarCountry(country.code)}
-                  >
-                    {country.code}
-                  </button>
+                className={styles.select}
+              >
+                {YEAR_OPTIONS.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
-              </div>
+              </select>
+            </div>
+            <div className={styles.field}>
+              <label>Countries (max 5, hold Ctrl/Cmd to select multiple):</label>
+              <select
+                multiple
+                value={radarCountries}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                  setRadarCountries(selected.length <= 5 ? selected : radarCountries);
+                }}
+                className={styles.selectMulti}
+                size={6}
+              >
+                {availableCountries.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name} ({country.code})
+                  </option>
+                ))}
+              </select>
             </div>
           </>
         )}
@@ -419,19 +406,24 @@ export function AdvancedChartsPanel() {
               </button>
             </div>
             {stackedMode === 'countries' && (
-              <div className={styles.countrySelection}>
-                <label>Countries (max 7):</label>
-                <div className={styles.chips}>
+              <div className={styles.field}>
+                <label>Countries (max 7, hold Ctrl/Cmd to select multiple):</label>
+                <select
+                  multiple
+                  value={stackedCountries}
+                  onChange={(e) => {
+                    const selected = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                    setStackedCountries(selected.length <= 7 ? selected : stackedCountries);
+                  }}
+                  className={styles.selectMulti}
+                  size={6}
+                >
                   {availableCountries.map((country) => (
-                    <button
-                      key={country.code}
-                      className={`${styles.chip} ${stackedCountries.includes(country.code) ? styles.chipActive : ''}`}
-                      onClick={() => toggleStackedCountry(country.code)}
-                    >
-                      {country.code}
-                    </button>
+                    <option key={country.code} value={country.code}>
+                      {country.name} ({country.code})
+                    </option>
                   ))}
-                </div>
+                </select>
               </div>
             )}
           </>

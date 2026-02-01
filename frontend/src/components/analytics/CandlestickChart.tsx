@@ -66,32 +66,40 @@ export function CandlestickChart({ data, indicatorLabel }: CandlestickChartProps
           <span>{formatNumber(item.low)}</span>
         </div>
         <div className={`${styles.tooltipChange} ${item.isUp ? styles.up : styles.down}`}>
-          {item.isUp ? '▲' : '▼'} {((item.close - item.open) / item.open * 100).toFixed(2)}%
+          {item.isUp ? '▲' : '▼'}{' '}
+          {item.open !== 0
+            ? `${(((item.close - item.open) / item.open) * 100).toFixed(2)}%`
+            : (item.close === item.open ? '0%' : '—')}
         </div>
       </div>
     );
   };
 
-  // Custom shape for candlestick
+  // Custom shape for candlestick (Recharts passes x, y, width, height, payload)
   const CandlestickBar = (props: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    payload: typeof chartData[0];
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+    payload?: typeof chartData[0];
   }) => {
-    const { x, y, width, height, payload } = props;
+    const { x = 0, y = 0, width = 0, height = 0, payload } = props;
+    if (!payload) return null;
     const color = payload.isUp ? '#10b981' : '#ef4444';
     const centerX = x + width / 2;
+    const bodyPx = Math.max(height, 2);
+    const scale = payload.body > 0 ? bodyPx / payload.body : 1;
+    const upperWick = (payload.high - Math.max(payload.open, payload.close)) * scale;
+    const lowerWick = (Math.min(payload.open, payload.close) - payload.low) * scale;
 
     return (
       <g>
-        {/* Wick */}
+        {/* Wick: line from high to low */}
         <line
           x1={centerX}
-          y1={y - (payload.high - Math.max(payload.open, payload.close)) * (height / payload.body || 1)}
+          y1={y - upperWick}
           x2={centerX}
-          y2={y + height + (Math.min(payload.open, payload.close) - payload.low) * (height / payload.body || 1)}
+          y2={y + bodyPx + lowerWick}
           stroke={color}
           strokeWidth={1}
         />
@@ -100,7 +108,7 @@ export function CandlestickChart({ data, indicatorLabel }: CandlestickChartProps
           x={x}
           y={y}
           width={width}
-          height={Math.max(height, 2)}
+          height={bodyPx}
           fill={color}
           rx={2}
         />
@@ -128,7 +136,7 @@ export function CandlestickChart({ data, indicatorLabel }: CandlestickChartProps
             tickFormatter={(v) => formatNumber(v, 0)}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="body" shape={<CandlestickBar x={0} y={0} width={0} height={0} payload={chartData[0]} />}>
+          <Bar dataKey="body" shape={<CandlestickBar />}>
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.isUp ? '#10b981' : '#ef4444'} />
             ))}

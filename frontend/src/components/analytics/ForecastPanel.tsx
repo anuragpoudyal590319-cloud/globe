@@ -74,8 +74,8 @@ export function ForecastPanel() {
           setHistoryData(data.map((d) => ({ year: d.year, value: d.value })));
         }
       } catch (err) {
-        console.error('Failed to fetch history:', err);
         const errorMessage = err instanceof Error ? err.message : 'Failed to load historical data';
+        console.error('Failed to fetch history:', err);
         setError(errorMessage);
         setHistoryData([]);
       } finally {
