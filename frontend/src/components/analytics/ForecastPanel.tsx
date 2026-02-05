@@ -196,12 +196,14 @@ export function ForecastPanel() {
             <button
               className={`${styles.toggle} ${showSMA ? styles.active : ''}`}
               onClick={() => setShowSMA(!showSMA)}
+              title="SMA (Simple Moving Average): smooths the series by taking the average of the last N years. Good for seeing the underlying trend but reacts more slowly to recent changes."
             >
               SMA ({smaWindow}y)
             </button>
             <button
               className={`${styles.toggle} ${showEMA ? styles.active : ''}`}
               onClick={() => setShowEMA(!showEMA)}
+              title="EMA (Exponential Moving Average): similar to SMA but gives more weight to recent years, so it reacts faster to new information."
             >
               EMA ({emaWindow}y)
             </button>
